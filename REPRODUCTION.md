@@ -46,9 +46,13 @@ scoring script) and the *internal contrast* between the two arms.
    default scores the prediction against `"Not mentioned in the conversation"`. The paper instead
    scored against `adversarial_answer`, i.e. the *wrong* option. The README says as much. Every
    run here therefore uses `--legacy-c5`, and the default is reported as a divergence.
-2. **Retrieval k.** `run_all_experiments.sh` uses the default k=10, but `run_k_sweep.sh` exists
-   because the repo says optimal k is model-specific. The paper does not state which k produced
-   Table 1. Here: k=10, stated as an assumption rather than a reproduction of an unknown.
+2. **Retrieval k.** Appendix Table 5 of the paper gives k=40/50 for the GPT-4o-mini backbone (k=40
+   for single-hop, multi-hop and adversarial; 50 for temporal and open-domain), while the body text
+   says "we primarily employ k=10". The released `run_all_experiments.sh` uses 10. The two arms are
+   therefore run at k=10 (harness default, comparable across arms) and a k=40 pass is run on the same
+   memory cache as a sensitivity check against the number Table 1 was actually produced with. The
+   per-category k schedule (40/40/50/50/40) is not reproduced: it is not implemented in the released
+   harness, and adding it would change more than one thing at a time.
 3. **Dataset size.** The paper describes 7,512 QA pairs; the released `locomo10.json` holds 1,986
    across 10 conversations (199 in conversation 0, the split used here). The reported numbers are
    on a different (larger) instance of the benchmark than the file shipped with the code.
@@ -79,6 +83,11 @@ Ablation: disable the evolution step (`--no-evolution`). One flag, one code path
 | 4 | Mirror intermittently empty | `python-dotenv`, `requests` randomly reported "no matching distribution" | Wrapped installs in a retry loop; transient, not a config problem |
 | 5 | **Cache-dir collision (would have invalidated the whole experiment)** | The memory cache path is `cached_memories_robust_{backend}_{model}`, which does not encode the memory-layer configuration. The ablation arm would have silently loaded the baseline's notes and produced a fake "no difference" result | Added an arm suffix (`_noevo`) to the cache path; also sanitised `/` in the model name, which would otherwise create nested directories |
 | 6 | Windows path from model name | `deepseek/deepseek-chat` contains `/`, so the log filename split into directories | Replaced `/` and `:` in log and cache names |
+| 7 | **Import kills the process (no traceback)** | `import utils` exited with SIGTERM and zero output, four times in a row. Cause: `utils.py` calls `nltk.download('punkt')` and `nltk.download('wordnet')` at import time; the NLTK data host is blocked here, and the failed fetch takes the interpreter down with it, so nothing could even print the reason | Look resources up on disk first, fetch only with `NLTK_ALLOW_DOWNLOAD=1`; also catch `BadZipFile`, because the interrupted download left a 1 MB fragment of the 10.7 MB `wordnet.zip` behind and the next `nltk.data.find` crashed on it |
+| 8 | NLTK data unreachable | `raw.githubusercontent.com` and the NLTK downloader both blocked | `punkt` via the HF mirror, `wordnet` via jsDelivr's copy of `nltk/nltk_data@gh-pages` |
+| 9 | **Sentence-transformers resolves a revision over the network at import** | second silent SIGTERM, one layer deeper: the log ended at `Could not resolve the revision ... (502 Bad Gateway)` | `env_bootstrap.py` sets `HF_HUB_OFFLINE=1` / `TRANSFORMERS_OFFLINE=1` before the first heavy import, so the cached weights load without asking |
+| 10 | BERTScore wants a 1.4 GB model | `bert_score` defaults to `roberta-large` with no way to override the model from the environment | Pre-fetched from the HF mirror; `bert_f1` is not part of the reported comparison, so it is instrumented but not used as evidence |
+| 11 | Budget, not CPU, is the binding constraint | The account held CNY 9.97. Measured burn: ~CNY 0.9/hour (DeepSeek caches the repeated evolution prompt) | Scope fixed to one conversation and 3 trials per arm; cost tracked from `instrument.py` and cross-checked against the account balance |
 
 ## 6. Commands
 

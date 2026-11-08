@@ -49,10 +49,21 @@ phase_noevo() {
   $PY repro_runner.py --tag noevo --trials 3 $COMMON --no-evolution
 }
 
+phase_k40() {
+  # Sensitivity check: Table 5 lists k=40/50 for the GPT-4o-mini backbone, Table 1 was produced
+  # with it, and the harness ships k=10. Reuses the memory caches, so only answering is re-run.
+  echo "=== Phase 4: k=40 sensitivity, both arms, 1 trial each ==="
+  $PY repro_runner.py --tag baseline_k40 --trials 1 --model deepseek-chat --backend deepseek \
+      --ratio 0.1 --retrieve-k 40 --legacy-c5
+  $PY repro_runner.py --tag noevo_k40 --trials 1 --model deepseek-chat --backend deepseek \
+      --ratio 0.1 --retrieve-k 40 --legacy-c5 --no-evolution
+}
+
 case "${1:-all}" in
   smoke)    phase_smoke ;;
   baseline) phase_baseline ;;
   noevo)    phase_noevo ;;
-  all)      phase_smoke; phase_baseline; phase_noevo ;;
-  *) echo "usage: bash run_repro.sh [smoke|baseline|noevo|all]" >&2; exit 2 ;;
+  k40)      phase_k40 ;;
+  all)      phase_smoke; phase_baseline; phase_noevo; phase_k40 ;;
+  *) echo "usage: bash run_repro.sh [smoke|baseline|noevo|k40|all]" >&2; exit 2 ;;
 esac

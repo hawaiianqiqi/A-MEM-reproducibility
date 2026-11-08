@@ -83,7 +83,16 @@ def calculate_bleu_scores(prediction: str, reference: str) -> Dict[str, float]:
     for n, weights in enumerate(weights_list, start=1):
         try:
             score = sentence_bleu(ref_tokens, pred_tokens, weights=weights, smoothing_function=smooth)
-        except Exception:
+        except Exception as exc:
+            # MODIFICATION (diagnostics): upstream swallows this and returns 0.0, so a broken BLEU
+            # backend produces a table of zeros that looks like a low score instead of an error.
+            # With nltk 3.8.1 on Python >= 3.12 that is exactly what happened (Fraction() lost its
+            # _normalize argument). Report the first failure loudly, then stay quiet.
+            global _BLEU_ERROR_REPORTED
+            if not _BLEU_ERROR_REPORTED:
+                print(f"Warning: BLEU could not be computed ({type(exc).__name__}: {exc}); "
+                      f"every question will report 0.0 for BLEU")
+                _BLEU_ERROR_REPORTED = True
             score = 0.0
         scores[f'bleu{n}'] = score
     

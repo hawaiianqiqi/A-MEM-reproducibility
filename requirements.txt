@@ -4,7 +4,7 @@ sentence-transformers
 scikit-learn
 torch
 transformers
-nltk
+nltk==3.9.1  # 3.8.1 calls Fraction(_normalize=...), removed in Python 3.12: BLEU silently returns 0
 rank-bm25
 
 # LLM API clients
