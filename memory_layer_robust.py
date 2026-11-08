@@ -244,7 +244,7 @@ class RobustLLMController:
     """Factory that selects the right robust LLM controller."""
 
     def __init__(self,
-                 backend: Literal["openai", "ollama", "sglang", "vllm"] = "sglang",
+                 backend: Literal["openai", "ollama", "sglang", "vllm", "deepseek"] = "sglang",
                  model: str = "gpt-4",
                  api_key: Optional[str] = None,
                  api_base: Optional[str] = None,
@@ -259,8 +259,18 @@ class RobustLLMController:
             self.llm = RobustSGLangController(model, sglang_host, sglang_port)
         elif backend == "vllm":
             self.llm = RobustVLLMController(model, sglang_host, sglang_port)
+        elif backend == "deepseek":
+            # Edge case A: the paper's GPT-4o-mini backbone is replaced by DeepSeek through litellm.
+            # DeepSeek is OpenAI-compatible, so the whole harness stays untouched: only the model
+            # name, base URL and key change, which keeps the swap a single controlled variable.
+            resolved_key = api_key or os.getenv("DEEPSEEK_API_KEY")
+            if not resolved_key:
+                raise ValueError("DEEPSEEK_API_KEY is not set (put it in .env or the environment)")
+            resolved_base = api_base or os.getenv("DEEPSEEK_BASE_URL") or "https://api.deepseek.com"
+            model_name = model if model.startswith("deepseek/") else f"deepseek/{model}"
+            self.llm = RobustLiteLLMController(model_name, api_base=resolved_base, api_key=resolved_key)
         else:
-            raise ValueError("Backend must be 'openai', 'ollama', 'sglang', or 'vllm'")
+            raise ValueError("Backend must be 'openai', 'ollama', 'sglang', 'vllm', or 'deepseek'")
 
         # an empty completion falls back to defaults downstream (heuristic metadata, no evolution, an empty
         # prediction): count it, so a run with many of them does not look like a clean low score
