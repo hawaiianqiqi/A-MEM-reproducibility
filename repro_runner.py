@@ -19,6 +19,7 @@ import os
 import statistics
 import time
 
+import env_bootstrap  # noqa: F401  (loads .env and forces offline model loading first)
 import instrument
 
 METRICS = ["f1", "bleu1"]

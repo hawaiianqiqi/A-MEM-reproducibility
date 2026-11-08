@@ -1,4 +1,5 @@
 import re
+import os
 import string
 import numpy as np
 from typing import List, Dict, Union
@@ -17,12 +18,35 @@ from openai import OpenAI
 from load_dataset import load_locomo_dataset, QA, Turn, Session, Conversation
 from sentence_transformers.util import pytorch_cos_sim
 
-# Download required NLTK data
-try:
-    nltk.download('punkt', quiet=True)
-    nltk.download('wordnet', quiet=True)
-except Exception as e:
-    print(f"Error downloading NLTK data: {e}")
+# Required NLTK data
+# MODIFICATION (environment): upstream downloads these unconditionally at import time. On a
+# machine that cannot reach the NLTK data server the attempt does not raise, it aborts the
+# process, which makes every entry point unusable. So: look on disk first, and only fetch when
+# explicitly allowed.
+def ensure_nltk_data(pkg: str, kind: str) -> bool:
+    """True if the resource is already on disk; fetch only if NLTK_ALLOW_DOWNLOAD=1."""
+    try:
+        nltk.data.find(f"{kind}/{pkg}")
+        return True
+    except LookupError:
+        pass
+    except Exception as e:
+        # a truncated archive left behind by an interrupted download also lands here
+        print(f"Warning: NLTK resource '{pkg}' is unreadable ({e}); delete it and re-fetch")
+        return False
+    if os.getenv("NLTK_ALLOW_DOWNLOAD") != "1":
+        print(f"Warning: NLTK resource '{pkg}' is missing; metrics that need it degrade to 0 "
+              f"(set NLTK_ALLOW_DOWNLOAD=1 to fetch it)")
+        return False
+    try:
+        return bool(nltk.download(pkg, quiet=True))
+    except Exception as e:
+        print(f"Error downloading NLTK data '{pkg}': {e}")
+        return False
+
+
+ensure_nltk_data('punkt', 'tokenizers')
+ensure_nltk_data('wordnet', 'corpora')
 
 # Initialize SentenceTransformer model (this will be reused)
 try:

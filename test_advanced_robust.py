@@ -31,16 +31,13 @@ import copy
 import pickle
 import random
 from tqdm import tqdm
-from utils import calculate_metrics, aggregate_metrics, score_prediction
+from utils import calculate_metrics, aggregate_metrics, score_prediction, ensure_nltk_data
 from datetime import datetime
 
-# Download required NLTK data
-try:
-    nltk.data.find('tokenizers/punkt')
-    nltk.data.find('wordnet')
-except LookupError:
-    nltk.download('punkt')
-    nltk.download('wordnet')
+# Required NLTK data — same find-first rule as utils (see the note there). The upstream version
+# downloads whenever a resource is missing, which aborts the process on this machine.
+ensure_nltk_data('punkt', 'tokenizers')
+ensure_nltk_data('wordnet', 'corpora')
 
 # Initialize SentenceTransformer model (this will be reused)
 try:
