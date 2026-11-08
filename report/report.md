@@ -97,8 +97,9 @@ them:
    finding in itself.
 2. **k.** Table 5 of the paper lists k=40 (single-hop, multi-hop, adversarial) and k=50 (temporal,
    open-domain) for GPT-4o-mini, while the body text says "we primarily employ k=10" and the shipped
-   driver uses 10. This reproduction uses k=10 for both arms; running k=40 as well would have
-   exceeded the remaining budget, which is recorded in §7 as the main unfinished item.
+   driver uses 10. This reproduction runs k=10 for all trials and adds a one-trial k=40 sensitivity
+   pass on the same cached memories (§4), so the sensitivity the paper leaves implicit is measured
+   rather than assumed. The k=50 rows and a multi-trial k=40 arm remain unrun for budget reasons.
 3. **Dataset size.** The paper describes 7,512 QA pairs; the released `locomo10.json` contains 1,986.
    The reported numbers were therefore produced on a different, larger instance of the benchmark than
    the file that ships with the code. Nothing in the repository can close that gap.
@@ -141,6 +142,30 @@ paper's 50.03 and this 74.86 describe the same behaviour under two labels. Any l
 adversarial F1 next to the other four categories is comparing a similarity-to-a-wrong-answer metric
 with four similarity-to-a-right-answer metrics.
 
+**Retrieval depth is the single largest setting gap, and it is now measured.** One extra trial at
+k=40 — the value Table 5 lists for this backbone — reuses the identical cached memories and differs
+only in how many notes are retrieved:
+
+| Category | k=10 (3 trials) | k=40 (1 trial) | Δ | Paper |
+|---|---|---|---|---|
+| Single-hop | 44.00 ± 0.32 | **55.08** | +11.1 | 27.02 |
+| Multi-hop | 27.39 ± 3.48 | **29.90** | +2.5 | 45.85 |
+| Temporal | 20.17 ± 1.07 | **25.42** | +5.3 | 12.14 |
+| Open-domain | 10.25 ± 0.64 | 10.32 | +0.1 | 44.65 |
+| Adversarial | 25.76 ± 5.47 | **41.81** | +16.1 | 50.03 |
+| **Overall** | **30.39 ± 1.25** | **39.46** | **+9.07** | — |
+
+Two conclusions follow. First, the overall 9-point gap between the arms of this table is mostly
+*setting*, not model: deepening retrieval closes most of the distance to the paper on adversarial
+(41.81 vs 50.03, from a 24-point deficit) and helps every category except open-domain. A single-run
+reproduction that only reports k=10 would have attributed all of that to the backbone swap. Second,
+and more telling, **the two categories the paper's thesis rests on barely move**: multi-hop gains
+2.5 points and open-domain 0.1, leaving 16–34 point deficits that retrieval depth cannot explain.
+The mechanism-sensitive categories are exactly the ones that do not respond to k — which is
+consistent with §5's reading that what differs on multi-hop is the backbone's ability to use
+pre-computed links, not how much raw context it receives. The k=40 trial also prices the setting:
+9.60 M input tokens against 2.37 M at k=10, $2.69 against $0.67 per trial.
+
 **Cost and latency** (measured by intercepting every `litellm.completion` call; `instrument.py`):
 
 | Phase | Calls | Input tokens | Est. cost | Wall clock |
@@ -149,6 +174,7 @@ with four similarity-to-a-right-answer metrics.
 | Baseline: answering (199 questions) | 398 per trial | 2.37 M per trial | $0.67 per trial | 6.6 min |
 | No-evolution: memory build | 419 | 0.34 M | $0.033 | 7 min |
 | No-evolution: answering | 398 per trial | 0.30 M per trial | $0.084 per trial | 6.1 min |
+| Baseline at k=40: answering | 398 per trial | 9.60 M per trial | $2.69 per trial | 11.5 min |
 
 Two numbers here are not visible in the paper. First, **the write path is 3.1 LLM calls per
 conversational turn** (419 metadata extractions + 892 evolution calls), against 2 calls per question
@@ -161,7 +187,7 @@ and the mechanism that is supposed to buy it is the one inflating it.
 
 Mean latency is 0.87–0.93 s per call on DeepSeek, so wall clock is dominated by call count, not by
 model speed. Total spend for the study, read from the provider's balance endpoint rather than from
-the token estimate: **CNY 8.5 (~$1.2)** for roughly 5,900 calls, including one discarded build (the
+the token estimate: **CNY 14.8 (~$2.1)** for roughly 6,300 calls, including one discarded build (the
 run whose BLEU column was broken) and the preflight runs.
 
 ## 5. The change, and what happened to the numbers
@@ -252,13 +278,16 @@ adversarial), so the harness is stable enough to support an ablation.
 
 **What did not reproduce.** The absolute numbers, for reasons the assignment explicitly allows and
 which I have tried to make legible rather than excuse: a different backbone, a smaller evaluation
-instance than the paper describes (1,986 vs 7,512 questions), a retrieval depth of 10 against a
-paper setting of 40/50, and a category-5 scoring convention that inflates the paper's adversarial
-column. More substantively, the paper's structural claim — that removing link generation and memory
-evolution costs about 21 multi-hop F1 points — does not hold at that magnitude here: the same
-removal costs 4.33 points, in the predicted direction, on the predicted category, but only a fifth
-of the size, and not separable from noise at three trials. On this backbone the mechanism is real
-but small, and it is priced at 11× the cost of the write path it modifies.
+instance than the paper describes (1,986 vs 7,512 questions), and a category-5 scoring convention
+that inflates the paper's adversarial column. Retrieval depth — the other obvious setting gap — was
+measured, not excused: at k=40 it recovers 9 of the missing points overall and most of the
+adversarial gap, but leaves multi-hop and open-domain essentially unmoved, so the model and dataset
+remain the best explanations for those two. More substantively, the paper's structural claim — that
+removing link generation and memory evolution costs about 21 multi-hop F1 points — does not hold at
+that magnitude here: the same removal costs 4.33 points, in the predicted direction, on the predicted
+category, but only a fifth of the size, and not separable from noise at three trials. On this
+backbone the mechanism is real but small, and it is priced at 11× the cost of the write path it
+modifies.
 
 **The honest summary of the ablation is therefore that it is inconclusive in the direction the
 assignment cares about.** It is not a failed reproduction: the direction matched, the cost effect was
@@ -274,11 +303,13 @@ answer turns a failure mode into a headline number. Each of these would have bee
 single-run report, and each was found only because the numbers were reported as a distribution and
 checked against a second convention.
 
-**Main unfinished item.** The k=40/50 sensitivity pass (paper Table 5) could not be run: the account
-held CNY 22.35 at that point and an answering trial at k=40 costs roughly four times a k=10 trial.
-The harness supports it (`bash run_repro.sh k40`) and the memory caches are reusable, so it is a
-30-minute job for anyone with the budget. Reporting one k instead of sweeping it is a limitation of
-this submission, not a property of the method.
+**Remaining unfinished items.** The k=40 sensitivity pass is one trial, so its per-category cells
+carry no variance estimate (the k=10 baseline's own std bounds suggest the adversarial and temporal
+gains are real, but the multi-hop +2.5 is within noise). The k=50 rows, the ablation arm at k=40,
+and a multi-trial k=40 would each cost another answering trial at roughly four times the k=10 rate;
+the harness supports all three (`bash run_repro.sh k40`), and the memory caches are reusable, so
+they are a 30-minute job each for anyone with the budget. Reporting one k at one trial per
+sensitivity cell is a limitation of this submission, not a property of the method.
 
 **Advice to the next person.** Run the environment preflight before anything else; freeze the target
 claim in writing before the first paid call; isolate the ablation cache on day one; and print the

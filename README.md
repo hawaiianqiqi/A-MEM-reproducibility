@@ -33,6 +33,12 @@ trap answer; BLEU-1 is silently `0.00` on Python ≥ 3.12 with the repository's 
 the memory cache path does not encode the memory configuration, so a naive ablation measures nothing.
 All three are documented in `REPRODUCTION.md` and in §6 of the report.
 
+A one-trial **k=40 sensitivity pass** on the same cached memories (k is the setting Table 5 of the
+paper actually uses) recovers most of the overall gap — **39.46 vs 30.39 at k=10**, adversarial
+41.81 vs 50.03 — but multi-hop and open-domain barely move (+2.5, +0.1). Retrieval depth explains
+the headline gap; it does not explain the mechanism-sensitive categories. It also costs 4× the input
+tokens per trial (9.60 M vs 2.37 M).
+
 ## Ablation: what the evolution step is worth on this backbone
 
 `--no-evolution`, three trials per arm, everything else held fixed:
@@ -152,7 +158,7 @@ encode the memory configuration and the two arms would silently share notes.
 - Importing `utils.py` downloads NLTK data; with the data host unreachable the process dies without a traceback.
 - `sentence-transformers` resolves a model revision at import; set `HF_HUB_OFFLINE=1` (done in `env_bootstrap.py`).
 - The memory cache path omits the memory-layer configuration; isolate caches per arm or the ablation is a no-op.
-- The paper describes 7,512 QA pairs but the released file has 1,986, and Table 5 uses k=40/50 while the shipped driver uses 10.
+- The paper describes 7,512 QA pairs but the released file has 1,986, and Table 5 uses k=40/50 while the shipped driver uses 10 (the k=40 gap is measured in §4 of the report, not just declared).
 
 ## Citation
 

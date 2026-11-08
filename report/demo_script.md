@@ -45,7 +45,8 @@ Three things a reader cannot see from the paper:
    "my model fell for the trap" reads as a good score. Every run uses `--legacy-c5` for like-for-like
    comparison, and the report also gives the strict number.
 2. **k.** Show paper Table 5 (k=40/50 for GPT-4o-mini) versus `run_all_experiments.sh` (k=10). This
-   run uses 10 and says so.
+   run uses 10 as the default and adds a one-trial k=40 pass on the same cached memories to measure
+   the difference instead of just declaring it.
 3. **Dataset size.** The paper describes 7,512 QA pairs; the released file has 1,986. The numbers in
    Table 1 were produced on something larger than what ships with the code.
 
@@ -130,6 +131,11 @@ Say the four things, in this order:
 4. Report distributions, not points — the variance is what exposed the BLEU bug (an exactly-zero
    column, not a low one).
 
-Close with the honest limitation: the k=40/50 sensitivity pass was not run because the account held
-CNY 22 at that point and each k=40 trial costs roughly four times a k=10 trial. The harness supports
-it (`bash run_repro.sh k40`) and the memory caches are reusable.
+Close with what the k=40 sensitivity pass showed, because it is the most instructive single number
+in the study: overall F1 jumped from 30.39 to 39.46, adversarial went from a 24-point deficit to
+almost matching the paper — but multi-hop and open-domain, the two categories the thesis rests on,
+gained only 2.5 and 0.1. Retrieval depth explains the overall gap; it does not explain the
+mechanism-sensitive categories. That decomposition is only possible because the pass was actually
+run, and it cost CNY 19 because each k=40 trial consumes four times the input tokens of a k=10 one.
+What remains unrun: k=50, the ablation arm at k=40, and multi-trial k=40 cells — each a 30-minute
+job with reusable caches, each priced at roughly four times a k=10 trial.
