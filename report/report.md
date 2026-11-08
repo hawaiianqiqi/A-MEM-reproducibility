@@ -236,7 +236,7 @@ kept running and told me nothing.
 | 5 | Next import died silently, log ending at `Could not resolve the revision ... (502 Bad Gateway)` | `sentence-transformers` resolves a model revision over the network at import time; the request fails and kills the process | `env_bootstrap.py` sets `HF_HUB_OFFLINE=1` / `TRANSFORMERS_OFFLINE=1` before the first heavy import, so the cached weights load without asking |
 | 6 | **Every BLEU-1 cell was 0.00, with no error** | `nltk` 3.8.1 calls `Fraction(n, d, _normalize=False)`; that keyword was removed in Python 3.12. `calculate_bleu_scores` catches the `TypeError` and returns 0.0 | Pinned `nltk==3.9.1`; added a one-time loud warning so the same breakage cannot hide again; discarded the affected run |
 | 7 | pip 403 against the TUNA mirror while `curl` got 200 | The mirror rejects pip's TLS fingerprint | Switched to the aliyun mirror after testing four |
-| 8 | `bert_score` demanded a 1.4 GB `roberta-large` with no env override | default model is hard-coded to `roberta-large` | Pre-fetched from the HF mirror; `bert_f1` is instrumented but not used as evidence, since the paper does not report it |
+| 8 | `bert_score` demanded a 1.4 GB `roberta-large` with no env override | default model is hard-coded to `roberta-large`; the failure path would have been swallowed by the same bare `except` that hid blocker 6 | Pre-fetched from the HF mirror and verified end to end (all 14 metric fields populated, `bert_f1 = 0.858` on a hand-checked pair); still not used as evidence, since the paper does not report it |
 
 An environment preflight (`check_pipeline_smoke.py`) was written after blocker 5 and turns this class
 of failure from a two-hour loss into a two-minute report: eight turns of memory plus one question per

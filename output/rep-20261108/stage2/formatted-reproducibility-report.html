@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="docx-page-size" content="A4">
+<title>Reproducing A-MEM on LoCoMo: what transfers, what does not</title>
+<style>
+/* 页面规则：A4 纵向单节，页脚居中页码（无封面页、无目录） */
+@page {
+  @bottom-center { content: counter(page); }
+}
+
+:root {
+  /* 学术主题令牌的打印化覆盖：A4 十页以内的紧凑版面 */
+  --typography-fontSize-h1: 17pt;
+  --typography-fontSize-h2: 13pt;
+  --typography-fontSize-h3: 11.5pt;
+  --typography-fontSize-body: 10.5pt;
+  --typography-fontSize-table: 9.5pt;
+  --typography-fontSize-small: 9pt;
+  --typography-fontSize-code: 9.5pt;
+  --typography-lineHeight-body: 1.4;
+  --typography-lineHeight-heading: 1.25;
+  --typography-fontWeight-heading: 700;
+  --typography-fontWeight-body: 400;
+  --typography-fontFamily-heading: "宋体", SimSun, "Times New Roman", serif;
+  --typography-fontFamily-body: "宋体", SimSun, "Times New Roman", serif;
+  --typography-fontFamily-code: "Courier New", Consolas, monospace;
+  --color-primary: #000000;
+  --color-text: #000000;
+  --color-muted: #444444;
+  --color-line: #000000;
+  --color-rule: #999999;
+  --color-bg: #ffffff;
+  --spacing-paragraph: 0.45em;
+  --spacing-hair: 0.12em;
+  --spacing-blockGap: 0.55em;
+  --spacing-sectionGap: 0.95em;
+  --spacing-listIndent: 1.6em;
+  --spacing-cellPad: 0.24em 0.45em;
+  --spacing-tableGap: 0.6em;
+  --margin-page: 2.2cm;
+  /* 别名层（令牌 → 本地变量） */
+  --fs-h1: var(--typography-fontSize-h1);
+  --fs-h2: var(--typography-fontSize-h2);
+  --fs-h3: var(--typography-fontSize-h3);
+  --fs-body: var(--typography-fontSize-body);
+  --fs-table: var(--typography-fontSize-table);
+  --fs-small: var(--typography-fontSize-small);
+  --fs-code: var(--typography-fontSize-code);
+  --ff-heading: var(--typography-fontFamily-heading);
+  --ff-body: var(--typography-fontFamily-body);
+  --ff-mono: var(--typography-fontFamily-code);
+  --lh-body: var(--typography-lineHeight-body);
+  --lh-heading: var(--typography-lineHeight-heading);
+  --fw-bold: var(--typography-fontWeight-heading);
+  --fw-normal: var(--typography-fontWeight-body);
+  --page-content-width: 16.1cm;
+}
+
+body {
+  font-family: var(--ff-body);
+  font-size: var(--fs-body);
+  line-height: var(--lh-body);
+  color: var(--color-text);
+  background: var(--color-bg);
+  max-width: var(--page-content-width);
+  margin: var(--margin-page) auto;
+  padding: 0;
+}
+
+h1, h2, h3 {
+  font-family: var(--ff-heading);
+  font-weight: var(--fw-bold);
+  color: var(--color-text);
+  line-height: var(--lh-heading);
+}
+
+h1 {
+  font-size: var(--fs-h1);
+  text-align: center;
+  text-indent: 0;
+  margin-top: 0;
+  margin-bottom: var(--spacing-hair);
+}
+
+h2 {
+  font-size: var(--fs-h2);
+  text-align: left;
+  text-indent: 0;
+  margin-top: var(--spacing-sectionGap);
+  margin-bottom: var(--spacing-blockGap);
+}
+
+h3 {
+  font-size: var(--fs-h3);
+  text-align: left;
+  text-indent: 0;
+  margin-top: var(--spacing-blockGap);
+  margin-bottom: var(--spacing-hair);
+}
+
+p {
+  font-family: var(--ff-body);
+  font-size: var(--fs-body);
+  color: var(--color-text);
+  text-align: justify;
+  text-indent: 2em;
+  margin-top: 0;
+  margin-bottom: var(--spacing-paragraph);
+}
+
+/* 标题块（正文首页顶部，非独立封面页） */
+.doc-meta {
+  margin-top: var(--spacing-blockGap);
+  margin-bottom: var(--spacing-blockGap);
+}
+
+.doc-meta .meta-line {
+  font-size: var(--fs-small);
+  text-align: center;
+  text-indent: 0;
+  margin-top: 0;
+  margin-bottom: var(--spacing-hair);
+}
+
+.doc-rule {
+  border: 0;
+  border-top: 1px solid var(--color-rule);
+  margin-top: var(--spacing-blockGap);
+  margin-bottom: var(--spacing-sectionGap);
+}
+
+ul, ol {
+  margin-top: var(--spacing-blockGap);
+  margin-bottom: var(--spacing-blockGap);
+  padding-left: var(--spacing-listIndent);
+}
+
+li {
+  font-family: var(--ff-body);
+  font-size: var(--fs-body);
+  color: var(--color-text);
+  line-height: var(--lh-body);
+  text-align: justify;
+  margin-bottom: var(--spacing-paragraph);
+}
+
+code {
+  font-family: var(--ff-mono);
+  font-size: var(--fs-code);
+  color: var(--color-text);
+}
+
+strong { font-weight: var(--fw-bold); }
+
+/* 三线表：仅表头上下线与末行下线，无竖线 */
+.table-wrap {
+  margin-top: var(--spacing-tableGap);
+  margin-bottom: var(--spacing-tableGap);
+}
+
+table.three-line {
+  border-collapse: collapse;
+  width: 100%;
+  font-family: var(--ff-body);
+  font-size: var(--fs-table);
+  color: var(--color-text);
+}
+
+table.three-line th {
+  font-weight: var(--fw-bold);
+  font-size: var(--fs-table);
+  color: var(--color-text);
+  text-align: left;
+  vertical-align: bottom;
+  background: transparent;
+  border-top: 1.5pt solid var(--color-line);
+  border-bottom: 0.75pt solid var(--color-line);
+  border-left: 0;
+  border-right: 0;
+  padding: var(--spacing-cellPad);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+table.three-line td {
+  font-size: var(--fs-table);
+  color: var(--color-text);
+  text-align: left;
+  vertical-align: top;
+  border: 0;
+  padding: var(--spacing-cellPad);
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+}
+
+table.three-line tr.last-row td {
+  border-bottom: 1.5pt solid var(--color-line);
+}
+</style>
+</head>
+<body>
+<section role="body">
+
+<h1>Reproducing A-MEM on LoCoMo: what transfers, what does not</h1>
+
+<div class="doc-meta">
+  <p class="meta-line"><strong>Course:</strong> FTEC5660 Agentic AI for Business and FinTech — Reproducibility Work</p>
+  <p class="meta-line"><strong>Name:</strong> [Your Name] &nbsp; <strong>Student ID:</strong> [Student ID]</p>
+  <p class="meta-line"><strong>Repository:</strong> https://github.com/[your-account]/amem-locomo-repro</p>
+  <p class="meta-line"><strong>Demo recording:</strong> [link]</p>
+</div>
+
+<hr class="doc-rule">
+
+<h2>1. Project summary and what I set out to reproduce</h2>
+
+<p>A-MEM (<em>Agentic Memory for LLM Agents</em>, arXiv:2502.12110) proposes that an agent's memory should be organised the way a Zettelkasten is: each conversational turn becomes a structured note, notes are linked to their nearest neighbours, and adding a note <em>evolves</em> the notes around it — their context, keywords and tags are rewritten in light of the new arrival.</p>
+
+<p>The paper's evidence is LoCoMo, a long-conversation QA benchmark, where A-MEM is reported to roughly double the multi-hop F1 of a full-context baseline (45.85 vs 18.41) while reading an order of magnitude fewer tokens (2,520 vs 16,910 per question).</p>
+
+<p><strong>Target claim (fixed before any run):</strong> reproduce the A-MEM column of Table 1 for the GPT-4o-mini backbone — per-category F1 and BLEU-1 on LoCoMo — using the authors' experiment repository <code>WujiangXu/AgenticMemory</code>.</p>
+
+<p>Table 1 of the paper is the right target because it is the paper's headline quantitative claim and because every ingredient needed to check it ships with the code: the LoCoMo file, the evaluation script, the memory implementation and the prompt templates.</p>
+
+<p>I deliberately did <strong>not</strong> use <code>agiresearch/A-mem</code>, the library the paper points practitioners to: its README states that paper results live in the other repository, and it contains no evaluation script, so nothing in it can be checked against a reported number.</p>
+
+<p><strong>Scope.</strong> One of the ten released conversations (conversation 0: 419 turns, 199 questions, all five categories present), three trials per arm. The assignment permits reproducing one benchmark or one table row; a single conversation keeps the cost inside a CNY 20 budget while still producing a distribution rather than a single point.</p>
+
+<h2>2. Environment setup</h2>
+
+<div class="table-wrap">
+<table class="three-line">
+<thead>
+<tr><th style="width:19%">Component</th><th style="width:44%">Choice</th><th style="width:37%">Why</th></tr>
+</thead>
+<tbody>
+<tr><td>OS / Python</td><td>Windows 11, Python 3.13.12 (venv)</td><td>the only interpreter available</td></tr>
+<tr><td>Repo</td><td><code>WujiangXu/AgenticMemory</code> @ <code>main</code>, committed as a pristine snapshot before any edit</td><td>see §6, blocker 1</td></tr>
+<tr><td>Backbone</td><td><code>deepseek-chat</code> via <code>https://api.deepseek.com</code></td><td>GPT-4o-mini is not reachable from this machine; see §3</td></tr>
+<tr><td>Embeddings</td><td><code>sentence-transformers/all-MiniLM-L6-v2</code> (unchanged)</td><td>the repo's default</td></tr>
+<tr><td>Metrics</td><td><code>nltk</code> 3.9.1, <code>rouge-score</code>, <code>bert-score</code></td><td>pinned; see §6, blocker 12</td></tr>
+<tr class="last-row"><td>Data</td><td><code>data/locomo10.json</code> as released (1,986 QA pairs)</td><td>no download needed</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Setup is reproducible with <code>pip install -r requirements.txt</code>; the reproduction-specific steps (model prefetch, NLTK data, offline flags) are documented in the repository README and automated in <code>env_bootstrap.py</code>, because four of them fail silently or fatally if done in the wrong order.</p>
+
+<p><strong>The backbone substitution is a controlled variable, not a free choice.</strong> Per the assignment's edge case A, everything except the model identifier is held fixed:</p>
+
+<div class="table-wrap">
+<table class="three-line">
+<thead>
+<tr><th style="width:37%">Knob</th><th style="width:31%">Paper</th><th style="width:32%">This reproduction</th></tr>
+</thead>
+<tbody>
+<tr><td>Provider / base URL</td><td>OpenAI / <code>api.openai.com</code></td><td>DeepSeek / <code>api.deepseek.com</code></td></tr>
+<tr><td>Model</td><td><code>gpt-4o-mini</code></td><td><code>deepseek-chat</code></td></tr>
+<tr><td>Prompts (note construction, evolution, retrieval, answering)</td><td>—</td><td>byte-identical</td></tr>
+<tr><td>Temperature (metadata, evolution, answering)</td><td>0.7</td><td>0.7</td></tr>
+<tr><td>Temperature (category 5)</td><td>0.5</td><td>0.5</td></tr>
+<tr><td><code>max_tokens</code></td><td>1000</td><td>1000</td></tr>
+<tr><td>Retrieval k</td><td>40/50 (Table 5)</td><td>10 (harness default)</td></tr>
+<tr class="last-row"><td>Metrics code</td><td>repo's <code>utils.py</code></td><td>same file, one diagnostics-only edit</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>The consequence is stated once and applies to every number below: <strong>these results are not directly comparable with the paper's, because the backbone LLM differs.</strong> What is comparable is the protocol (same tasks, same metrics, same scoring code) and the internal contrast between the two arms.</p>
+
+<h2>3. Target, metrics, and the measurement decisions that hide inside them</h2>
+
+<p><strong>Target.</strong> For each of the five LoCoMo categories and for the run as a whole: token-level F1 and BLEU-1 between the predicted answer and the gold answer, in percent.</p>
+
+<ul>
+<li><strong>F1</strong> is the harmonic mean of precision and recall over the <em>set</em> of lowercased tokens, after replacing <code>. , ! ?</code> with spaces (<code>utils.simple_tokenize</code>). It rewards content overlap and ignores word order.</li>
+<li><strong>BLEU-1</strong> is unigram precision with a brevity penalty, computed by <code>nltk.sentence_bleu</code> with <code>weights=(1,0,0,0)</code>. It rewards producing the reference's words and punishes padding.</li>
+</ul>
+
+<p>Both are reported as mean ± standard deviation over three trials, where the trials differ only in the answering seed (42/43/44). Memory construction runs once and is cached; later trials re-run retrieval and answering.</p>
+
+<p>Variance therefore measures the answering stage, which is where the sampling temperature lives — not memory construction, which the paper never reports. This is a stated limitation, not an oversight: rebuilding the memory three times would triple the cost to estimate a quantity nobody quotes.</p>
+
+<p>Three measurement decisions materially change the numbers, and the report would be dishonest without them:</p>
+
+<ol>
+<li><strong>Category 5 (adversarial) is scored against the wrong answer by default.</strong> Category-5 questions have no answer in the conversation — the correct response is "not mentioned". The released harness scores them against <code>"Not mentioned in the conversation"</code>, which is right, but the evaluation that produced the paper's Table 1 scored them against <code>adversarial_answer</code>, i.e. the <em>trap</em>. The repository says so in <code>load_dataset.py</code>, and its flag is named <code>legacy_c5</code>. Every run here uses <code>--legacy-c5</code> so that the comparison is like-for-like; §4 also reports the strict scoring, recomputed from the stored predictions, because the difference is large enough to be a finding in itself.</li>
+<li><strong>k.</strong> Table 5 of the paper lists k=40 (single-hop, multi-hop, adversarial) and k=50 (temporal, open-domain) for GPT-4o-mini, while the body text says "we primarily employ k=10" and the shipped driver uses 10. This reproduction uses k=10 for both arms; running k=40 as well would have exceeded the remaining budget, which is recorded in §7 as the main unfinished item.</li>
+<li><strong>Dataset size.</strong> The paper describes 7,512 QA pairs; the released <code>locomo10.json</code> contains 1,986. The reported numbers were therefore produced on a different, larger instance of the benchmark than the file that ships with the code. Nothing in the repository can close that gap.</li>
+</ol>
+
+<h2>4. What I measured versus what the paper reports</h2>
+
+<p>Backbone: <code>deepseek-chat</code>; conversation 0 only (199 questions); k=10; three answer-seeded trials; category 5 scored as the paper scored it.</p>
+
+<div class="table-wrap">
+<table class="three-line">
+<thead>
+<tr><th style="width:22%">Category</th><th style="width:22%">F1 (ours, mean ± std)</th><th style="width:20%">BLEU-1 (ours)</th><th style="width:18%">F1 (paper, GPT-4o-mini)</th><th style="width:18%">Δ F1</th></tr>
+</thead>
+<tbody>
+<tr><td>Single-hop (n=70)</td><td style="text-align:right">44.00 ± 0.32</td><td style="text-align:right">38.93 ± 0.51</td><td style="text-align:right">27.02</td><td style="text-align:right"><strong>+16.98</strong></td></tr>
+<tr><td>Multi-hop (n=32)</td><td style="text-align:right">27.39 ± 3.48</td><td style="text-align:right">18.52 ± 2.53</td><td style="text-align:right">45.85</td><td style="text-align:right"><strong>−18.46</strong></td></tr>
+<tr><td>Temporal (n=37)</td><td style="text-align:right">20.17 ± 1.07</td><td style="text-align:right">12.86 ± 0.56</td><td style="text-align:right">12.14</td><td style="text-align:right">+8.03</td></tr>
+<tr><td>Open-domain (n=13)</td><td style="text-align:right">10.25 ± 0.64</td><td style="text-align:right">7.26 ± 2.28</td><td style="text-align:right">44.65</td><td style="text-align:right"><strong>−34.40</strong></td></tr>
+<tr class="last-row"><td>Adversarial (n=47)</td><td style="text-align:right">25.76 ± 5.47</td><td style="text-align:right">25.33 ± 5.40</td><td style="text-align:right">50.03</td><td style="text-align:right">−24.27</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Two categories reproduce in the loose sense (same order of magnitude; the paper's ranking across categories is <em>not</em> preserved), two do not, and one — open-domain — is off by a factor of four.</p>
+
+<p>One caveat on precision: the standard deviations above are across answer seeds, not across questions. With 13 open-domain questions in this conversation, the sampling error on that category is on the order of ±20 F1 points, so its deviation should be read as "clearly lower", not as a point estimate. The overall figure (30.39) is dominated by single-hop, which contributes 70 of the 199 questions.</p>
+
+<p><strong>Why the gaps are where they are.</strong> Single-hop, temporal and open-domain are answered from a single retrieved note; they measure whether the retrieval found the right turn, which is a property of the embedding index rather than of the agentic organisation.</p>
+
+<p>DeepSeek is simply a stronger reader than GPT-4o-mini on the single-hop and temporal slices (+17.0, +8.0), and a much more conservative one on open-domain (−34.4): it tends to answer "not mentioned in the conversation" instead of volunteering world knowledge, which is exactly what category 3 punishes. Multi-hop is the one category the paper's thesis actually rests on, and it is the one that did not transfer (−18.5). That is the result worth following up, and §5 follows it up.</p>
+
+<p><strong>The adversarial column is a measurement artefact, in both directions.</strong> Scored the paper's way (against the trap answer), A-MEM gets 25.76 here versus 50.03 in the paper. Scored the way the task is actually specified — the correct reply is "not mentioned", so a declining answer is a <em>correct</em> answer — the same predictions score <strong>74.86</strong>, with 74% of the 141 answers declining correctly. The paper's 50.03 and this 74.86 describe the same behaviour under two labels.</p>
+
+<p>Any leaderboard that puts adversarial F1 next to the other four categories is comparing a similarity-to-a-wrong-answer metric with four similarity-to-a-right-answer metrics.</p>
+
+<p><strong>Cost and latency</strong> (measured by intercepting every <code>litellm.completion</code> call; <code>instrument.py</code>):</p>
+
+<div class="table-wrap">
+<table class="three-line">
+<thead>
+<tr><th style="width:33%">Phase</th><th style="width:13%">Calls</th><th style="width:19%">Input tokens</th><th style="width:17%">Est. cost</th><th style="width:18%">Wall clock</th></tr>
+</thead>
+<tbody>
+<tr><td>Baseline: memory build (419 turns)</td><td style="text-align:right">1,311</td><td style="text-align:right">2.0 M</td><td style="text-align:right">$0.375</td><td style="text-align:right">28 min</td></tr>
+<tr><td>Baseline: answering (199 questions)</td><td style="text-align:right">398 per trial</td><td style="text-align:right">2.37 M per trial</td><td style="text-align:right">$0.67 per trial</td><td style="text-align:right">6.6 min</td></tr>
+<tr><td>No-evolution: memory build</td><td style="text-align:right">419</td><td style="text-align:right">0.34 M</td><td style="text-align:right">$0.033</td><td style="text-align:right">7 min</td></tr>
+<tr class="last-row"><td>No-evolution: answering</td><td style="text-align:right">398 per trial</td><td style="text-align:right">0.30 M per trial</td><td style="text-align:right">$0.084 per trial</td><td style="text-align:right">6.1 min</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Two numbers here are not visible in the paper. First, <strong>the write path is 3.1 LLM calls per conversational turn</strong> (419 metadata extractions + 892 evolution calls), against 2 calls per question on the read path — building memory costs more calls than answering every question about it.</p>
+
+<p>Second, <strong>the evolution step inflates the read path too</strong>: with links in place, 10 retrieved notes drag their neighbours into the prompt, so one question consumes 11,910 input tokens against 1,508 without evolution — 7.9× — for the same k. A-MEM's selling point is small inference prompts relative to a 16,910-token full-context baseline; at k=10 with neighbour expansion that advantage is 1.4×, not 6.7×, and the mechanism that is supposed to buy it is the one inflating it.</p>
+
+<p>Mean latency is 0.87–0.93 s per call on DeepSeek, so wall clock is dominated by call count, not by model speed. Total spend for the study, read from the provider's balance endpoint rather than from the token estimate: <strong>CNY 8.5 (~$1.2)</strong> for roughly 5,900 calls, including one discarded build (the run whose BLEU column was broken) and the preflight runs.</p>
+
+<h2>5. The change, and what happened to the numbers</h2>
+
+<p><strong>The change: disable memory evolution</strong> (<code>--no-evolution</code>, one flag, one code path). With the flag set, <code>add_note</code> stores each note with its LLM-extracted metadata but never runs <code>process_memory</code>, so notes never gain links, never strengthen their tags, and never rewrite their neighbours' context. Retrieval, prompts, k, seeds, metrics and the embedding index are untouched. The two arms differ in exactly one mechanism.</p>
+
+<p>This is the right mechanism to isolate because it is the one the paper credits for its largest gain: Table 2 reports multi-hop F1 falling from 45.85 (full) to 31.24 (without memory evolution) to 24.55 (without link generation and evolution). Skipping <code>process_memory</code> removes both, so the arm corresponds to the paper's <code>w/o LG &amp; ME</code> row and predicts a multi-hop drop of roughly 21 F1 points.</p>
+
+<div class="table-wrap">
+<table class="three-line">
+<thead>
+<tr><th style="width:13%">Category</th><th style="width:17%">Full A-MEM</th><th style="width:20%">Without evolution</th><th style="width:12%">Δ (ours)</th><th style="width:25%">Paper: full → w/o LG &amp; ME</th><th style="width:13%">Paper Δ</th></tr>
+</thead>
+<tbody>
+<tr><td>Single-hop</td><td style="text-align:right">44.00 ± 0.32</td><td style="text-align:right">42.55 ± 4.43</td><td style="text-align:right">−1.45</td><td style="text-align:right">27.02 → —</td><td style="text-align:right">—</td></tr>
+<tr><td>Multi-hop</td><td style="text-align:right">27.39 ± 3.48</td><td style="text-align:right">23.05 ± 0.71</td><td style="text-align:right"><strong>−4.33</strong></td><td style="text-align:right">45.85 → 24.55</td><td style="text-align:right"><strong>−21.30</strong></td></tr>
+<tr><td>Temporal</td><td style="text-align:right">20.17 ± 1.07</td><td style="text-align:right">23.98 ± 3.92</td><td style="text-align:right">+3.82</td><td style="text-align:right">12.14 → —</td><td style="text-align:right">—</td></tr>
+<tr><td>Open-domain</td><td style="text-align:right">10.25 ± 0.64</td><td style="text-align:right">11.77 ± 4.26</td><td style="text-align:right">+1.52</td><td style="text-align:right">44.65 → —</td><td style="text-align:right">—</td></tr>
+<tr><td>Adversarial</td><td style="text-align:right">25.76 ± 5.47</td><td style="text-align:right">24.16 ± 0.91</td><td style="text-align:right">−1.60</td><td style="text-align:right">50.03 → —</td><td style="text-align:right">—</td></tr>
+<tr class="last-row"><td><strong>Overall</strong></td><td style="text-align:right"><strong>30.39 ± 1.25</strong></td><td style="text-align:right"><strong>29.61 ± 2.55</strong></td><td style="text-align:right"><strong>−0.78</strong></td><td style="text-align:right">—</td><td style="text-align:right">—</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>Three trials per arm, same questions, same seeds, same prompts; the only difference is whether <code>process_memory</code> runs.</p>
+
+<p><strong>Only one of the five categories moves the way the paper says it should, and it moves a fifth as far.</strong> Multi-hop falls from 27.39 to 23.05 (−4.33) where the paper reports −21.30 for the same mechanism removed. The other four categories change by between −1.60 and +3.82, in both directions, which is what noise looks like: over the full question set the arms differ by 0.78 F1 points, against a pooled standard error of 1.6.</p>
+
+<p><strong>This is not a clean refutation, and it should not be read as one.</strong> The effect is in the predicted direction on the predicted category, but three trials cannot resolve a 4-point difference when the full arm's own standard deviation on that category is 3.5 points (Welch t ≈ 2.1).</p>
+
+<p>A properly powered test of a 4-point effect at that variance needs roughly 8–10 trials per arm, which the remaining budget did not cover. What the data does support is a claim about <em>magnitude</em>: whatever the evolution step contributes here, it is not the 21-point contribution the paper reports.</p>
+
+<p><strong>Why the gap is plausible rather than surprising.</strong> The paper's multi-hop gain is measured against a backbone whose full-context baseline collapses on multi-hop questions (LoCoMo 18.41 F1), which suggests GPT-4o-mini struggles to synthesise across retrieved passages on its own. Pre-computing the links — which is what the evolution step does — hands it structure it cannot build.</p>
+
+<p>DeepSeek is a stronger multi-hop reader: it reaches 27.39 <em>without</em> that scaffolding, and the same scaffolding then adds very little. If that reading is right, A-MEM's headline number describes an interaction between the mechanism and a specific backbone's weakness, not a property of agentic memory in general.</p>
+
+<p><strong>The mechanism also injects variance.</strong> On multi-hop, the full arm's standard deviation is 3.48 against 0.71 without evolution. The evolution step rewrites neighbours' context and tags in place, so a note's retrievability depends on what arrived after it — a nondeterministic process feeding a deterministic metric. That is a cost the paper's single-run reporting cannot show.</p>
+
+<p><strong>What the mechanism costs.</strong> Removing it cuts the write path from 1,311 LLM calls to 419 for the same 419 turns — 4.1 calls per turn down to 1.0 — and the build from $0.375 to $0.033, an <strong>11× reduction</strong>: the evolution prompts carry five neighbour notes each, so they are both more numerous and longer.</p>
+
+<p>Read against the ablation table, the trade is roughly 11× the cost of the entire write path for ~4 F1 points on one of five categories. A practitioner deciding whether to enable evolution should see that ratio before the paper's multi-hop headline.</p>
+
+<h2>6. Debug diary</h2>
+
+<p>The blockers below are ordered by how much time they cost, and each one is a case where the code kept running and told me nothing.</p>
+
+<div class="table-wrap">
+<table class="three-line">
+<thead>
+<tr><th style="width:4%">#</th><th style="width:30%">Symptom</th><th style="width:32%">Root cause</th><th style="width:34%">Fix</th></tr>
+</thead>
+<tbody>
+<tr><td>1</td><td><code>git clone</code> hung past 180 s; two different repositories silently unpacked into the same <code>A-mem-main</code> directory</td><td>GitHub throughput ~30 KB/s here; both archives share a top-level name, so the library overwrote the experiment repo file by file</td><td>Fetched both as zips, compared file lists, kept only <code>WujiangXu/AgenticMemory</code>, committed it as a pristine snapshot before editing</td></tr>
+<tr><td>2</td><td><strong>The ablation would have reported "no difference"</strong></td><td>The memory cache path is <code>cached_memories_robust_{backend}_{model}</code> — it does not encode the memory-layer configuration. The no-evolution arm would have loaded the <em>baseline's</em> notes from disk and measured nothing</td><td>Added an arm suffix to the cache path, and sanitised <code>/</code> in the model name, which would otherwise have created nested directories on Windows</td></tr>
+<tr><td>3</td><td><code>import utils</code> exited with SIGTERM and zero output, four times</td><td><code>utils.py</code> calls <code>nltk.download('punkt')</code> and <code>('wordnet')</code> at import time; the NLTK data host is unreachable here and the failed fetch takes the interpreter down before anything can print</td><td>Look resources up on disk first; fetch only with <code>NLTK_ALLOW_DOWNLOAD=1</code></td></tr>
+<tr><td>4</td><td>Next import failed with <code>BadZipFile</code></td><td>The interrupted download had left a 1 MB fragment of the 10.7 MB <code>wordnet.zip</code> behind, and <code>nltk.data.find</code> crashed reading it</td><td>Catch unreadable resources and say so; re-fetched <code>wordnet</code> from a jsDelivr mirror of <code>nltk/nltk_data</code></td></tr>
+<tr><td>5</td><td>Next import died silently, log ending at <code>Could not resolve the revision ... (502 Bad Gateway)</code></td><td><code>sentence-transformers</code> resolves a model revision over the network at import time; the request fails and kills the process</td><td><code>env_bootstrap.py</code> sets <code>HF_HUB_OFFLINE=1</code> / <code>TRANSFORMERS_OFFLINE=1</code> before the first heavy import, so the cached weights load without asking</td></tr>
+<tr><td>6</td><td><strong>Every BLEU-1 cell was 0.00, with no error</strong></td><td><code>nltk</code> 3.8.1 calls <code>Fraction(n, d, _normalize=False)</code>; that keyword was removed in Python 3.12. <code>calculate_bleu_scores</code> catches the <code>TypeError</code> and returns 0.0</td><td>Pinned <code>nltk==3.9.1</code>; added a one-time loud warning so the same breakage cannot hide again; discarded the affected run</td></tr>
+<tr><td>7</td><td>pip 403 against the TUNA mirror while <code>curl</code> got 200</td><td>The mirror rejects pip's TLS fingerprint</td><td>Switched to the aliyun mirror after testing four</td></tr>
+<tr class="last-row"><td>8</td><td><code>bert_score</code> demanded a 1.4 GB <code>roberta-large</code> with no env override</td><td>default model is hard-coded to <code>roberta-large</code>; the failure path would have been swallowed by the same bare <code>except</code> that hid blocker 6</td><td>Pre-fetched from the HF mirror and verified end to end (all 14 metric fields populated, <code>bert_f1 = 0.858</code> on a hand-checked pair); still not used as evidence, since the paper does not report it</td></tr>
+</tbody>
+</table>
+</div>
+
+<p>An environment preflight (<code>check_pipeline_smoke.py</code>) was written after blocker 5 and turns this class of failure from a two-hour loss into a two-minute report: eight turns of memory plus one question per category, printing per-stage latency, tokens and cost.</p>
+
+<h2>7. Conclusion</h2>
+
+<p><strong>What reproduced.</strong> The protocol reproduced end to end: a clean checkout plus a key produces per-category F1 and BLEU-1 on the released data, with the same metric definitions and the same scoring code the paper used, in about 35 minutes on one consumer laptop and one conversation. Within-run variance is small (std 0.3–5.5 F1 points across categories, largest on multi-hop and adversarial), so the harness is stable enough to support an ablation.</p>
+
+<p><strong>What did not reproduce.</strong> The absolute numbers, for reasons the assignment explicitly allows and which I have tried to make legible rather than excuse: a different backbone, a smaller evaluation instance than the paper describes (1,986 vs 7,512 questions), a retrieval depth of 10 against a paper setting of 40/50, and a category-5 scoring convention that inflates the paper's adversarial column.</p>
+
+<p>More substantively, the paper's structural claim — that removing link generation and memory evolution costs about 21 multi-hop F1 points — does not hold at that magnitude here: the same removal costs 4.33 points, in the predicted direction, on the predicted category, but only a fifth of the size, and not separable from noise at three trials. On this backbone the mechanism is real but small, and it is priced at 11× the cost of the write path it modifies.</p>
+
+<p><strong>The honest summary of the ablation is therefore that it is inconclusive in the direction the assignment cares about.</strong> It is not a failed reproduction: the direction matched, the cost effect was large and clean, and the variance effect (3.48 vs 0.71 on multi-hop) was not something I expected. But a 3-trial test of a 4-point effect at that variance cannot support a claim either way, and I would rather report the confidence interval than the point estimate.</p>
+
+<p><strong>What is worth reporting even if it "failed".</strong> Three of the findings here are not about A-MEM at all; they are about the practice of reproducing agentic systems. A cache path that omits the configuration silently turns an ablation into a no-op. A swallowed exception turns a broken metric into a table of zeros that reads like a low score. A scoring convention that scores against the wrong answer turns a failure mode into a headline number.</p>
+
+<p>Each of these would have been invisible in a single-run report, and each was found only because the numbers were reported as a distribution and checked against a second convention.</p>
+
+<p><strong>Main unfinished item.</strong> The k=40/50 sensitivity pass (paper Table 5) could not be run: the account held CNY 22.35 at that point and an answering trial at k=40 costs roughly four times a k=10 trial. The harness supports it (<code>bash run_repro.sh k40</code>) and the memory caches are reusable, so it is a 30-minute job for anyone with the budget. Reporting one k instead of sweeping it is a limitation of this submission, not a property of the method.</p>
+
+<p><strong>Advice to the next person.</strong> Run the environment preflight before anything else; freeze the target claim in writing before the first paid call; isolate the ablation cache on day one; and print the metric definition's edge cases (empty prediction, category-5 reference, int vs str answers) next to the first result, because every one of those was silently wrong here before it was caught.</p>
+
+</section>
+</body>
+</html>

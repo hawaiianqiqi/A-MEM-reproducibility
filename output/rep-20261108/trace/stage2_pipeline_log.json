@@ -1,0 +1,28 @@
+{
+  "request_id": "rep-20261108",
+  "stage": 2,
+  "route": "html",
+  "html_sub": "template",
+  "entry_type": "standalone",
+  "genre": "academic-paper",
+  "skills_invoked": [
+    "design-token",
+    "doc-typeset",
+    "html-review"
+  ],
+  "template_used": "academic-paper（变体：无封面页/无目录/无摘要与参考文献区，按源文档结构与用户约束）",
+  "html_review_attempts": 1,
+  "review": {
+    "first_pass_genre": "academic-paper",
+    "first_pass_score": 90,
+    "first_pass_issue": "AP-01/AP-02：源文档无摘要区与参考文献区，且用户约束禁止增补内容",
+    "second_pass_genre": "general",
+    "second_pass_score": 100,
+    "second_pass_passed": true
+  },
+  "fidelity_check": "HTML 正文与 report.md 词级/字符级一致（仅列表编号由 <ol> 语义承载、标题井号与表格分隔行不进入文本）",
+  "fallback": true,
+  "fallback_reason": "genre_fallback（学术体裁排版 + general 结构档复检：文档缺少 abstract/references 结构要件，用户禁止增补）",
+  "duration_ms": null,
+  "timestamp": "2026-11-08T17:43:56"
+}

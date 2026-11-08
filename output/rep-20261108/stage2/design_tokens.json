@@ -1,0 +1,36 @@
+{
+  "theme_name": "academic-paper",
+  "source": "design-token/tokens/compiled/academic-paper.json",
+  "overrides_applied": {
+    "reason": "A4 打印、目标 10 页以内的英文课程报告",
+    "fontSize": {
+      "h1": "17pt",
+      "h2": "13pt",
+      "h3": "11.5pt",
+      "body": "10.5pt",
+      "table": "9.5pt",
+      "small": "9pt",
+      "code": "9.5pt"
+    },
+    "lineHeight": {
+      "body": "1.4",
+      "heading": "1.25"
+    },
+    "fontFamily": {
+      "body": "宋体, SimSun, \"Times New Roman\", serif",
+      "heading": "宋体, SimSun, \"Times New Roman\", serif",
+      "code": "\"Courier New\", Consolas, monospace"
+    },
+    "color": {
+      "text": "#000000",
+      "line": "#000000",
+      "rule": "#999999"
+    },
+    "layout": {
+      "pageSize": "A4",
+      "contentWidth": "16.1cm",
+      "margin": "2.2cm",
+      "pageFooter": "counter(page) 居中页码"
+    }
+  }
+}
