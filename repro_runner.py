@@ -43,6 +43,7 @@ def parse_args():
     p.add_argument("--retrieve-k", type=int, default=10)
     p.add_argument("--memory-scope", choices=["conversation", "pooled"], default="conversation")
     p.add_argument("--temperature-c5", type=float, default=0.5)
+    p.add_argument("--no-evolution", action="store_true", help="MODIFICATION: skip memory evolution")
     p.add_argument("--legacy-c5", action="store_true",
                    help="score category 5 against the adversarial answer, as the paper did")
     p.add_argument("--seed", type=int, default=42)
@@ -77,7 +78,8 @@ def render_markdown(table, meta):
     lines.append(f"### Arm: `{meta['tag']}`")
     lines.append("")
     lines.append(f"- model: `{meta['model']}` via `{meta['backend']}` | k={meta['retrieve_k']} | "
-                 f"ratio={meta['ratio']} | legacy_c5={meta['legacy_c5']}")
+                 f"ratio={meta['ratio']} | no_evolution={meta['no_evolution']} | "
+                 f"legacy_c5={meta['legacy_c5']}")
     lines.append(f"- trials: {meta['trials']} (answer seeds {meta['seeds']})")
     lines.append("")
     lines.append("| Split | F1 | BLEU-1 |")
@@ -112,7 +114,7 @@ def main():
             dataset_path, args.model, out_path, args.ratio,
             args.backend, args.temperature_c5, args.retrieve_k,
             "http://localhost", 30000, args.legacy_c5, seed,
-            False, args.memory_scope,
+            False, args.memory_scope, args.no_evolution,
         )
         wall = time.time() - started
         usage = instrument.snapshot()
@@ -140,6 +142,7 @@ def main():
         "ratio": args.ratio,
         "retrieve_k": args.retrieve_k,
         "temperature_c5": args.temperature_c5,
+        "no_evolution": args.no_evolution,
         "legacy_c5": args.legacy_c5,
         "memory_scope": args.memory_scope,
         "trials": args.trials,

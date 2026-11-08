@@ -384,9 +384,15 @@ class RobustAgenticMemorySystem:
                  sglang_host: str = "http://localhost",
                  sglang_port: int = 30000,
                  check_connection: bool = False,
-                 refresh_index: bool = False):
+                 refresh_index: bool = False,
+                 no_evolution: bool = False):
 
         self.memories: Dict[str, RobustMemoryNote] = {}
+        # MODIFICATION (ablation): when True, add_note skips process_memory entirely, so notes are
+        # stored with their LLM-extracted metadata but never gain links, strengthened tags, or
+        # neighbour context updates. Retrieval is unchanged, so the only thing that differs between
+        # the baseline and this arm is the evolution step the paper credits for its multi-hop gain.
+        self.no_evolution = no_evolution
         # re-embed neighbours as soon as evolution updates them; otherwise their embeddings stay
         # stale until consolidate_memories runs every evo_threshold evolutions (paper behaviour)
         self.refresh_index = refresh_index
@@ -408,7 +414,7 @@ class RobustAgenticMemorySystem:
             timestamp=time,
             **kwargs,
         )
-        evo_label, note = self.process_memory(note)
+        evo_label, note = (False, note) if self.no_evolution else self.process_memory(note)
         self.memories[note.id] = note
         self.retriever.add_documents([note_document(note)])
         if evo_label:

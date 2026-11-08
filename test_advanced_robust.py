@@ -56,7 +56,8 @@ class RobustAdvancedMemAgent:
     """Agent using the robust memory system with plain-text LLM calls."""
 
     def __init__(self, model, backend, retrieve_k, temperature_c5,
-                 sglang_host="http://localhost", sglang_port=30000, refresh_index=False):
+                 sglang_host="http://localhost", sglang_port=30000, refresh_index=False,
+                 no_evolution=False):
         self.memory_system = RobustAgenticMemorySystem(
             model_name='all-MiniLM-L6-v2',
             llm_backend=backend,
@@ -64,6 +65,7 @@ class RobustAdvancedMemAgent:
             sglang_host=sglang_host,
             sglang_port=sglang_port,
             refresh_index=refresh_index,
+            no_evolution=no_evolution,
         )
         self.retriever_llm = RobustLLMController(
             backend=backend,
@@ -207,10 +209,12 @@ def evaluate_dataset(dataset_path: str, model: str, output_path: Optional[str] =
                      temperature_c5: float = 0.5, retrieve_k: int = 10,
                      sglang_host: str = "http://localhost", sglang_port: int = 30000,
                      legacy_c5_reference: bool = False, seed: int = 42,
-                     refresh_index: bool = False, memory_scope: str = "conversation"):
+                     refresh_index: bool = False, memory_scope: str = "conversation",
+                     no_evolution: bool = False):
     """Evaluate the robust agent on the LoComo dataset."""
     timestamp = datetime.now().strftime("%Y-%m-%d-%H-%M")
-    log_filename = f"eval_robust_{model}_{backend}_ratio{ratio}_{memory_scope}_{timestamp}.log"
+    safe_model = model.replace("/", "-").replace(":", "-")
+    log_filename = f"eval_robust_{safe_model}_{backend}_ratio{ratio}_{memory_scope}_{timestamp}.log"
     log_path = os.path.join(os.path.dirname(__file__), "logs", log_filename)
     os.makedirs(os.path.dirname(log_path), exist_ok=True)
 
@@ -235,9 +239,13 @@ def evaluate_dataset(dataset_path: str, model: str, output_path: Optional[str] =
 
     i = 0
     error_num = 0
+    # MODIFICATION (ablation): the arm tag keeps cached memories of the two arms apart. Without it
+    # the ablation would silently load the baseline's notes and the comparison would be meaningless.
+    arm_tag = "_noevo" if no_evolution else ""
     memories_dir = os.path.join(
         os.path.dirname(__file__),
-        "cached_memories_robust_{}_{}{}".format(backend, model, "_refresh" if refresh_index else ""),
+        "cached_memories_robust_{}_{}{}{}".format(backend, safe_model,
+                                                  "_refresh" if refresh_index else "", arm_tag),
     )
     os.makedirs(memories_dir, exist_ok=True)
     allow_categories = [1, 2, 3, 4, 5]
@@ -246,7 +254,7 @@ def evaluate_dataset(dataset_path: str, model: str, output_path: Optional[str] =
     def load_or_build(sample_idx, sample):
         """An agent holding this conversation's memory, loaded from the cache or built and cached."""
         agent = RobustAdvancedMemAgent(model, backend, retrieve_k, temperature_c5,
-                                       sglang_host, sglang_port, refresh_index)
+                                       sglang_host, sglang_port, refresh_index, no_evolution)
 
         memory_cache_file = os.path.join(memories_dir, f"memory_cache_sample_{sample_idx}.pkl")
         retriever_cache_file = os.path.join(memories_dir, f"retriever_cache_sample_{sample_idx}.pkl")
@@ -346,8 +354,12 @@ def evaluate_dataset(dataset_path: str, model: str, output_path: Optional[str] =
 
     final_results = {
         "model": model,
+        "backend": backend,
         "dataset": dataset_path,
         "memory_layer": "robust",
+        "retrieve_k": retrieve_k,
+        "temperature_c5": temperature_c5,
+        "no_evolution": no_evolution,
         "total_questions": total_questions,
         "category_distribution": {
             str(cat): count for cat, count in category_counts.items()
@@ -427,6 +439,9 @@ def main():
                              "(LoCoMo's protocol, as in the paper). pooled: from one memory holding all "
                              "evaluated conversations, so retrieval must also reject other conversations' "
                              "notes (uses the same memory caches)")
+    parser.add_argument("--no_evolution", action="store_true",
+                        help="MODIFICATION: store notes without running the evolution step (no links, no "
+                             "strengthened tags, no neighbour updates). Builds its own memory cache.")
     args = parser.parse_args()
 
     if args.ratio <= 0.0 or args.ratio > 1.0:
@@ -439,7 +454,7 @@ def main():
         dataset_path, args.model, output_path, args.ratio,
         args.backend, args.temperature_c5, args.retrieve_k,
         args.sglang_host, args.sglang_port, args.legacy_c5_reference, args.seed,
-        args.refresh_index, args.memory_scope,
+        args.refresh_index, args.memory_scope, args.no_evolution,
     )
 
 

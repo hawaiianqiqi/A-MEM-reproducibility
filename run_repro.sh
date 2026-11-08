@@ -4,11 +4,13 @@
 # Phases are ordered cheapest-first so a failure never wastes a finished memory build:
 #   1. smoke   — 1 conversation, 1 trial: proves the whole chain works before paying for more
 #   2. baseline— paper arm (3 trials), memories built once and cached
+#   3. noevo   — MODIFICATION arm: identical except the evolution step is skipped
 #
 # Usage:
 #   cp .env.example .env   # then put the key in .env
 #   bash run_repro.sh smoke
 #   bash run_repro.sh baseline
+#   bash run_repro.sh noevo
 #   bash run_repro.sh all
 set -euo pipefail
 
@@ -42,9 +44,15 @@ phase_baseline() {
   $PY repro_runner.py --tag baseline --trials 3 $COMMON
 }
 
+phase_noevo() {
+  echo "=== Phase 3: ablation arm (no evolution), 3 trials ==="
+  $PY repro_runner.py --tag noevo --trials 3 $COMMON --no-evolution
+}
+
 case "${1:-all}" in
   smoke)    phase_smoke ;;
   baseline) phase_baseline ;;
-  all)      phase_smoke; phase_baseline ;;
-  *) echo "usage: bash run_repro.sh [smoke|baseline|all]" >&2; exit 2 ;;
+  noevo)    phase_noevo ;;
+  all)      phase_smoke; phase_baseline; phase_noevo ;;
+  *) echo "usage: bash run_repro.sh [smoke|baseline|noevo|all]" >&2; exit 2 ;;
 esac
