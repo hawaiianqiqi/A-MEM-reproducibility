@@ -4,5 +4,8 @@ __pycache__/
 .env
 cached_memories*/
 logs/
-results*/
 *.log
+
+# trial outputs are kept: they are the evidence behind the report's tables
+# (only the embedding arrays are dropped, since the caches rebuild them)
+results/*.npy

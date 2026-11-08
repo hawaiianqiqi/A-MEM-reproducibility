@@ -1,140 +1,160 @@
-# Agentic Memory 🧠
+# A-MEM on LoCoMo — reproducibility study
 
-A novel agentic memory system for LLM agents that can dynamically organize memories in an agentic way.
+A reproduction of **A-MEM: Agentic Memory for LLM Agents** (arXiv:2502.12110), Table 1, plus a
+one-mechanism ablation, done for FTEC5660 *Agentic AI for Business and FinTech*.
 
-> **Note:** This repository is specifically designed to reproduce the results presented in our paper. If you want to use the A-Mem system in building your agents, please refer to our official implementation at: [A-mem-sys](https://github.com/WujiangXu/A-mem-sys)
+Upstream experiment code: [`WujiangXu/AgenticMemory`](https://github.com/WujiangXu/AgenticMemory)
+(kept unmodified as the first commit in this repository; see `UPSTREAM_README.md`).
 
-For more details, please refer to our paper: [A-Mem: Agentic Memory for LLM Agents](https://arxiv.org/pdf/2502.12110)
+| | |
+|---|---|
+| Target claim | A-MEM's per-category F1 / BLEU-1 on LoCoMo QA (paper Table 1) |
+| Backbone | `deepseek-chat` — GPT-4o-mini is unavailable here, so the swap is treated as a controlled variable |
+| Scope | conversation 0 of the released `data/locomo10.json` (419 turns, 199 questions), 3 trials per arm |
+| Modification | `--no-evolution`: the memory-evolution step is skipped, everything else is held fixed |
 
-> 🔥 **News (Oct 2026):** We provide a stronger version of A-Mem, **FlexA-Mem: Budget-Adaptive Agentic Memory for LLM Agents** ([paper](https://arxiv.org/html/2610.33274v1), [code](https://github.com/WujiangXu/Flex-Amem)). FlexA-Mem keeps A-Mem's linked notes but uses them as the compressed history itself: at every step, the agent sees the whole history as a timeline of notes, and the notes most relevant to the current step are expanded in place into their raw content or excerpts, so the prompt fits any token budget. It is evaluated on LongMemEval-S, LoCoMo, SWE-bench Verified and AppWorld.
+## Headline result
 
-## Introduction 🌟
+Backbone `deepseek-chat`, k=10, three answer-seeded trials, category 5 scored as the paper scored it.
+Full discussion and limitations: `report/report.md`.
 
-Large Language Model (LLM) agents have demonstrated remarkable capabilities in handling complex real-world tasks through external tool usage. However, to effectively leverage historical experiences, they require sophisticated memory systems. Traditional memory systems, while providing basic storage and retrieval functionality, often lack advanced memory organization capabilities.
+| Category | F1 (ours) | BLEU-1 (ours) | F1 (paper, GPT-4o-mini) |
+|---|---|---|---|
+| Single-hop (n=70) | 44.00 ± 0.32 | 38.93 ± 0.51 | 27.02 |
+| Multi-hop (n=32) | 27.39 ± 3.48 | 18.52 ± 2.53 | 45.85 |
+| Temporal (n=37) | 20.17 ± 1.07 | 12.86 ± 0.56 | 12.14 |
+| Open-domain (n=13) | 10.25 ± 0.64 | 7.26 ± 2.28 | 44.65 |
+| Adversarial (n=47) | 25.76 ± 5.47 | 25.33 ± 5.40 | 50.03 |
+| **Overall** | **30.39 ± 1.25** | **25.52 ± 1.65** | — |
 
-Our project introduces an innovative **Agentic Memory** system that revolutionizes how LLM agents manage and utilize their memories:
+Three findings that matter more than the table: the same predictions score **74.86** on adversarial
+questions when scored by the task's actual rule ("not mentioned" is correct) instead of against the
+trap answer; BLEU-1 is silently `0.00` on Python ≥ 3.12 with the repository's unpinned `nltk`; and
+the memory cache path does not encode the memory configuration, so a naive ablation measures nothing.
+All three are documented in `REPRODUCTION.md` and in §6 of the report.
 
-<div align="center">
-  <img src="Figure/intro-a.jpg" alt="Traditional Memory System" width="600"/>
-  <img src="Figure/intro-b.jpg" alt="Our Proposed Agentic Memory" width="600"/>
-  <br>
-  <em>Comparison between traditional memory system (top) and our proposed agentic memory (bottom). Our system enables dynamic memory operations and flexible agent-memory interactions.</em>
-</div>
+## Ablation: what the evolution step is worth on this backbone
 
-## Key Features ✨
+`--no-evolution`, three trials per arm, everything else held fixed:
 
-- 🔄 Dynamic memory organization based on Zettelkasten principles
-- 🔍 Intelligent indexing and linking of memories
-- 📝 Comprehensive note generation with structured attributes
-- 🌐 Interconnected knowledge networks
-- 🔄 Continuous memory evolution and refinement
-- 🤖 Agent-driven decision making for adaptive memory management
+| Category | Full A-MEM | Without evolution | Δ | Paper Δ (w/o LG & ME) |
+|---|---|---|---|---|
+| Single-hop | 44.00 ± 0.32 | 42.55 ± 4.43 | −1.45 | — |
+| Multi-hop | 27.39 ± 3.48 | 23.05 ± 0.71 | **−4.33** | **−21.30** |
+| Temporal | 20.17 ± 1.07 | 23.98 ± 3.92 | +3.82 | — |
+| Open-domain | 10.25 ± 0.64 | 11.77 ± 4.26 | +1.52 | — |
+| Adversarial | 25.76 ± 5.47 | 24.16 ± 0.91 | −1.60 | — |
+| **Overall** | **30.39 ± 1.25** | **29.61 ± 2.55** | −0.78 | — |
 
-## Framework 🏗️
+The direction matches the paper on the expected category, the magnitude is a fifth of it, and three
+trials cannot separate a 4-point effect from noise at that variance (Welch t ≈ 2.1). The write path
+costs 11× more with the mechanism enabled ($0.375 vs $0.033 per conversation build) — 1,311 vs 419
+LLM calls for the same 419 turns.
 
-<div align="center">
-  <img src="Figure/framework.jpg" alt="Agentic Memory Framework" width="800"/>
-  <br>
-  <em>The framework of our Agentic Memory system showing the dynamic interaction between LLM agents and memory components.</em>
-</div>
+## Install
 
-## How It Works 🛠️
-
-When a new memory is added to the system:
-1. Generates comprehensive notes with structured attributes
-2. Creates contextual descriptions and tags
-3. Analyzes historical memories for relevant connections
-4. Establishes meaningful links based on similarities
-5. Enables dynamic memory evolution and updates
-
-## Results 📊
-
-Empirical experiments conducted on six foundation models demonstrate superior performance compared to existing SOTA baselines.
-
-## Getting Started 🚀
-
-1. Clone the repository:
-```bash
-git clone https://github.com/WujiangXu/AgenticMemory.git
-cd AgenticMemory
-```
-
-2. Install dependencies:
-Option 1: Using venv (Python virtual environment)
-```bash
-# Create and activate virtual environment
-python -m venv a-mem
-source a-mem/bin/activate  # Linux/Mac
-a-mem\Scripts\activate     # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-Option 2: Using Conda
-```bash
-# Create and activate conda environment
-conda create -n myenv python=3.9
-conda activate myenv
-
-# Install dependencies
-pip install -r requirements.txt
-```
-
-3. Run the experiments in LoCoMo dataset:
-
-**Option A — Original evaluation (requires OpenAI JSON schema support):**
-```bash
-python test_advanced.py
-```
-
-**Option B — Robust evaluation (recommended, works with any LLM backend):**
-
-The robust evaluation (`test_advanced_robust.py`) removes the JSON schema dependency and supports OpenAI API, vLLM, and Ollama backends.
+Requires Python ≥ 3.10 (developed on 3.13) and a DeepSeek API key.
 
 ```bash
-# OpenAI models
-python test_advanced_robust.py --backend openai --model gpt-4o-mini \
-    --dataset data/locomo10.json --output results_robust_gpt-4o-mini.json
+python -m venv .venv
+source .venv/bin/activate           # Windows: .venv\Scripts\activate
+pip install -r requirements.txt     # nltk is pinned: see "Known pitfalls" below
 
-# vLLM-served open-source models (start vLLM server first)
-python -m vllm.entrypoints.openai.api_server \
-    --model Qwen/Qwen2.5-3B-Instruct --port 30000 \
-    --dtype float16 --enforce-eager --max-model-len 8192
-python test_advanced_robust.py --backend vllm --model Qwen/Qwen2.5-3B-Instruct \
-    --dataset data/locomo10.json --output results_robust_qwen3b.json \
-    --sglang_port 30000
-
-# Ollama models
-python test_advanced_robust.py --backend ollama --model qwen2.5:3b \
-    --dataset data/locomo10.json --output results_robust_ollama_qwen3b.json
+cp .env.example .env                # then put DEEPSEEK_API_KEY in it; .env is git-ignored
 ```
 
-Key arguments:
-- `--retrieve_k`: Number of memories to retrieve per query (default: 10). Tune this per model for best results.
-- `--ratio`: Fraction of dataset to evaluate (e.g., `--ratio 0.1` for 10% quick test).
-- `--backend`: One of `openai`, `vllm`, `ollama`.
-- `--sglang_port`: Port for vLLM/SGLang server (default: 30000).
+Two model assets must be present before the first run, because this environment has no access to
+`huggingface.co` and `sentence-transformers` resolves revisions over the network at import time:
 
-4. Run the full k-sweep to find optimal retrieval k per model:
 ```bash
-bash run_k_sweep.sh
+# embedding model used by the memory index (+ roberta-large if you want bert_f1)
+HF_ENDPOINT=https://hf-mirror.com python -c "
+from huggingface_hub import snapshot_download
+snapshot_download('sentence-transformers/all-MiniLM-L6-v2')
+snapshot_download('roberta-large')"
 ```
 
-**Note:** To achieve the optimal performance reported in our paper, please adjust the hyperparameter `k` value accordingly. Memories are cached after the first run, so subsequent k-sweep evaluations only re-run the QA answering step.
+NLTK data (`punkt`, `punkt_tab`, `wordnet`) must be in `~/nltk_data`:
 
-**Categories Information:** The LoCoMo dataset contains the following categories:
-* Category 1: Multi-hop
-* Category 2: Temporal
-* Category 3: Open-domain
-* Category 4: Single-hop
-* Category 5: Adversarial
+```bash
+python - <<'EOF'
+import os, urllib.request, zipfile, io
+base = "https://cdn.jsdelivr.net/gh/nltk/nltk_data@gh-pages/packages"
+for path, kind in [("tokenizers/punkt.zip", "tokenizers"),
+                   ("tokenizers/punkt_tab.zip", "tokenizers"),
+                   ("corpora/wordnet.zip", "corpora")]:
+    dst = os.path.expanduser(f"~/nltk_data/{kind}")
+    os.makedirs(dst, exist_ok=True)
+    data = urllib.request.urlopen(f"{base}/{path}", timeout=60).read()
+    zipfile.ZipFile(io.BytesIO(data)).extractall(dst)
+    print("installed", path)
+EOF
+```
 
-For more details about the categories, please refer to [this GitHub issue](https://github.com/snap-research/locomo/issues/6). 
+Check the environment before spending money on API calls — this takes two minutes and catches the
+class of failure that otherwise surfaces after a 30-minute memory build:
 
-## Citation 📚
+```bash
+python check_pipeline_smoke.py --turns 8 --skip-bert
+```
 
-If you use this code in your research, please cite our series of works on agentic memory:
+## Run
+
+```bash
+bash run_repro.sh smoke       # 1 conversation, 1 trial: proves the chain end to end
+bash run_repro.sh baseline    # paper arm: 3 trials, memory built once and cached
+bash run_repro.sh noevo       # MODIFICATION arm: identical, evolution skipped
+bash run_repro.sh k40         # optional: k=40 sensitivity pass (paper Table 5)
+```
+
+Or drive the harness directly:
+
+```bash
+python repro_runner.py --tag baseline --trials 3 --legacy-c5
+python repro_runner.py --tag noevo --trials 3 --legacy-c5 --no-evolution
+python analyze_results.py --arms baseline noevo    # -> results/report_tables.md
+```
+
+`--legacy-c5` matches the paper's category-5 scoring (against the adversarial answer). Drop it to
+score category 5 the way the task is specified; `analyze_results.py` reports both from one run.
+
+Cost on DeepSeek for the full scope: about CNY 5 for a memory build, CNY 4.7 per answering trial,
+35 minutes and 6.6 minutes respectively on one laptop.
+
+## Layout
+
+| Path | What it is |
+|---|---|
+| `memory_layer_robust.py`, `utils.py`, `load_dataset.py`, `test_advanced_robust.py` | upstream harness (edits marked `MODIFICATION` in the diff) |
+| `repro_runner.py` | multi-trial runner: mean ± std per category, cost accounting |
+| `instrument.py` | intercepts `litellm.completion` for tokens, latency and cost |
+| `analyze_results.py` | turns trial JSONs into report tables; re-scores category 5 strictly |
+| `check_pipeline_smoke.py` | 2-minute environment preflight |
+| `env_bootstrap.py` | loads `.env`, forces offline model loading before the first heavy import |
+| `run_repro.sh` | the four phases above, in cost order |
+| `REPRODUCTION.md` | working notes: target, protocol assumptions, debug diary |
+| `report/report.md` | the written report |
+
+## The modification
+
+`--no-evolution` makes `add_note` skip `process_memory`, so a note keeps its LLM-extracted metadata
+but never gains links, never strengthens its tags, and never rewrites its neighbours' context.
+Retrieval, prompts, k, seeds and metrics are untouched.
+
+This is the mechanism the paper credits for its largest gain (Table 2: multi-hop F1 45.85 → 31.24
+without evolution → 24.55 without links and evolution), so the arm is directly comparable to the
+paper's `w/o LG & ME` row. Memory caches are kept per arm, because the cache path does not otherwise
+encode the memory configuration and the two arms would silently share notes.
+
+## Known pitfalls (all hit during this work)
+
+- `nltk` 3.8.1 + Python ≥ 3.12 → `Fraction(_normalize=...)` `TypeError` → BLEU silently 0.0. Pinned to 3.9.1.
+- Importing `utils.py` downloads NLTK data; with the data host unreachable the process dies without a traceback.
+- `sentence-transformers` resolves a model revision at import; set `HF_HUB_OFFLINE=1` (done in `env_bootstrap.py`).
+- The memory cache path omits the memory-layer configuration; isolate caches per arm or the ablation is a no-op.
+- The paper describes 7,512 QA pairs but the released file has 1,986, and Table 5 uses k=40/50 while the shipped driver uses 10.
+
+## Citation
 
 ```bibtex
 @inproceedings{xu2025amem,
@@ -143,17 +163,4 @@ If you use this code in your research, please cite our series of works on agenti
   booktitle={Advances in Neural Information Processing Systems},
   year={2025}
 }
-
-@article{xu2026flexamem,
-  title={FlexA-Mem: Budget-Adaptive Agentic Memory for LLM Agents},
-  author={Xu, Wujiang and Han, Jiaojiao and Zhu, Xi and Zhang, Qizheng and Liang, Kaiqu and Yin, Yutong and Mei, Kai and Metaxas, Dimitris N.},
-  journal={arXiv preprint arXiv:2610.33274},
-  year={2026}
-}
 ```
-
-## License 📄
-
-This project is licensed under the MIT License. See LICENSE for details.
-
-
