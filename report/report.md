@@ -1,7 +1,7 @@
 # Reproducing A-MEM on LoCoMo: what transfers, what does not
 
 **Course:** FTEC5660 Agentic AI for Business and FinTech — Reproducibility Work
-**Name:** [Your Name] **Student ID:** [Student ID]
+**Name:** Zi Han QIU **Student ID:** 1155268166
 **Repository:** https://github.com/[your-account]/amem-locomo-repro
 **Demo recording:** [link]
 
