@@ -14,7 +14,7 @@
 
 | # | 窗口 | 打开到哪 | 用途 |
 |---|---|---|---|
-| 1 | VS Code | 打开整个仓库 | 展示代码、git 命令输出 |
+| 1 | VS Code（**可选**） | 打开整个仓库 | 只在你想跳转看上下文时才用；代码展示可以完全用窗口 2 的展板脚本代替 |
 | 2 | VS Code 内置终端 | `cd` 到仓库根，字体调到 **18pt** | 跑命令、看日志 |
 | 3 | Word / WPS | `report/FTEC5660_Reproducibility_Report.docx` | 展示报告表格 |
 | 4 | 浏览器标签 A | 论文 HTML：`arxiv.org/html/2502.12110v1`，滚到 **Table 1** | 对照论文数字 |
@@ -107,7 +107,11 @@ grep -v "Loading weights\|Could not reach" report/preflight_demo.log | tail -22
 ## 3:30–5:30｜三个改变数字的协议决策
 
 **【画面 2-A】（3:30）**
-VS Code 打开 `load_dataset.py`，滚到 **第 27–34 行**（`def reference`）。
+终端执行（不用编辑器，带行号打印）：
+
+```bash
+bash report/show_exhibit.sh 1
+```
 
 念：
 > "Category five asks about something never mentioned, and the correct answer is 'not mentioned'.
@@ -127,8 +131,8 @@ Word → 报告 **§4** 里那句加粗的 "The adversarial column is a measurem
 > similarity-to-a-wrong-answer with similarity-to-a-right-answer."
 
 **【画面 2-C】（4:45）**
-VS Code 分屏：左边浏览器/文本展示论文 **Table 5**（k=40 / 50 那行），右边显示
-`test_advanced_robust.py` **第 419 行**：`parser.add_argument("--retrieve_k", type=int, default=10,`
+终端执行 `bash report/show_exhibit.sh 5`（显示 `--retrieve_k` 默认 10 那三行），
+旁边用浏览器标签 A 切到论文 **Table 5** 对照 k=40/50。两个窗口并排，不要来回切。
 
 念：
 > "Second setting: retrieval depth. Table 5 of the paper lists k equals forty and fifty for this
@@ -226,10 +230,10 @@ git show 0334040 --stat && git show 0334040 -- memory_layer_robust.py | grep -n 
 > that is part of the change, not an afterthought."
 
 **【画面 4-B】（9:00）**
-VS Code 跳 `memory_layer_robust.py` **第 417 行**，选中整行高亮：
+终端执行（带行号，第 417 行就是全部改动）：
 
-```python
-evo_label, note = (False, note) if self.no_evolution else self.process_memory(note)
+```bash
+bash report/show_exhibit.sh 2
 ```
 
 念：
@@ -247,7 +251,11 @@ evo_label, note = (False, note) if self.no_evolution else self.process_memory(no
 > that row, re-run on a different backbone."
 
 **【画面 4-D】（10:00）**
-VS Code 跳 `test_advanced_robust.py` **第 241–246 行**（`arm_tag`）。
+终端执行（`arm_tag` 那五行，第 241 行是关键）：
+
+```bash
+bash report/show_exhibit.sh 3
+```
 
 念：
 > "And this is the trap I mentioned. The cache path encodes backend and model — not the memory
@@ -329,6 +337,8 @@ Word → 报告 **§4 成本表**（`Phase | Calls | Input tokens | Est. cost | 
 
 **【画面 6-A】（13:30）**
 Word → 报告 **§7 Conclusion**，先停在 "Advice to the next person" 的四条上，一条一条指。
+说到第三条（BLEU 全零）时，可顺手切终端跑 `bash report/show_exhibit.sh 4` 展示那个
+`except Exception` 和下面的告警——**如果时间紧就跳过，只用嘴讲**。
 
 念：
 > "Four things I would tell whoever does this next. One: write the target claim down before the
