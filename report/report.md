@@ -2,7 +2,7 @@
 
 **Course:** FTEC5660 Agentic AI for Business and FinTech — Reproducibility Work
 **Name:** Zi Han QIU **Student ID:** 1155268166
-**Repository:** https://github.com/[your-account]/amem-locomo-repro
+**Repository:** https://github.com/hawaiianqiqi/A-MEM-reproducibility
 **Demo recording:** [link]
 
 ---
