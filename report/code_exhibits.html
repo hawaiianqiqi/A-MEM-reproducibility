@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>A-MEM reproduction — code exhibits</title>
+<style>
+:root { --ink:#1a1a1a; --muted:#5f5f5f; --rule:#d8d8d8; --bg:#fdfdfc; --accent:#7a1f1f; }
+* { box-sizing: border-box; }
+body { margin:0; padding:56px 64px 96px; background:var(--bg); color:var(--ink);
+  font-family:"Segoe UI",-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:17px; line-height:1.55; }
+header { max-width:980px; margin:0 auto 44px; border-bottom:2px solid var(--ink); padding-bottom:18px; }
+h1 { font-size:29px; margin:0 0 8px; font-weight:650; letter-spacing:-.01em; }
+header p { margin:0; color:var(--muted); font-size:15px; }
+section { max-width:980px; margin:0 auto 60px; page-break-inside:avoid; }
+.ex-no { display:inline-block; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); font-weight:700; margin-bottom:6px; }
+h2 { font-size:22px; margin:0 0 8px; font-weight:620; letter-spacing:-.01em; }
+.note { margin:0 0 14px; color:#333; font-size:15.5px; }
+.filepath { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:14px;
+  color:var(--muted); margin-bottom:10px; }
+pre { margin:0; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--ink);
+  border-radius:3px; padding:18px 20px; overflow-x:auto;
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:15.5px; line-height:1.62; }
+.ln { display:inline-block; width:3.1em; color:#9a9a9a; text-align:right; margin-right:1.4em;
+  user-select:none; font-variant-numeric:tabular-nums; }
+.hit { background:#fff4c2; }
+.hit .ln { color:#8a6a00; }
+code { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.94em;
+  background:#f0efec; padding:1px 5px; border-radius:3px; }
+@media print { body{padding:0;font-size:12px} section{margin-bottom:28px} pre{font-size:11px} }
+</style>
+</head>
+<body>
+<header>
+  <h1>A-MEM reproduction — code exhibits</h1>
+  <p>FTEC5660 reproducibility work · Zi Han QIU · 1155268166 · lines read from the repository at HEAD, not transcribed</p>
+</header>
+<section>
+  <div class="ex-no">Exhibit 1</div>
+  <h2>Category 5 is scored against the trap answer</h2>
+  <p class="note">The paper's evaluation behind Table 1 scored adversarial questions against <code>adversarial_answer</code> — the wrong answer — so falling for the trap reads as a high score. 444 of the 446 have no gold answer at all.</p>
+  <div class="filepath">load_dataset.py — lines 27-34 of 274</div>
+  <pre><div><span class="ln">27</span>    def reference(self, legacy_c5: bool = False) -&gt; Optional[str]:</div>
+<div><span class="ln">28</span>        &quot;&quot;&quot;The gold answer to score against. Category-5 questions cannot be answered from the</div>
+<div><span class="ln">29</span>        conversation (444 of the 446 have no `answer` field), so the correct response is</div>
+<div><span class="ln">30</span>        NOT_MENTIONED. legacy_c5=True returns the adversarial answer instead, which is how</div>
+<div><span class="ln">31</span>        the evaluation behind the paper&#x27;s numbers scored category 5.&quot;&quot;&quot;</div>
+<div><span class="ln">32</span>        if self.category == 5:</div>
+<div class="hit"><span class="ln">33</span>            return self.adversarial_answer if legacy_c5 else NOT_MENTIONED</div>
+<div><span class="ln">34</span>        return self.answer</div></pre>
+</section>
+<section>
+  <div class="ex-no">Exhibit 2</div>
+  <h2>The whole modification is one line (417)</h2>
+  <p class="note">With <code>--no-evolution</code>, a note keeps its LLM-extracted metadata but never gains links, never strengthens tags, never rewrites its neighbours. Retrieval, prompts, k, seeds and metrics are untouched.</p>
+  <div class="filepath">memory_layer_robust.py — lines 414-419 of 593</div>
+  <pre><div><span class="ln">414</span>            timestamp=time,</div>
+<div><span class="ln">415</span>            **kwargs,</div>
+<div><span class="ln">416</span>        )</div>
+<div class="hit"><span class="ln">417</span>        evo_label, note = (False, note) if self.no_evolution else self.process_memory(note)</div>
+<div><span class="ln">418</span>        self.memories[note.id] = note</div>
+<div><span class="ln">419</span>        self.retriever.add_documents([note_document(note)])</div></pre>
+</section>
+<section>
+  <div class="ex-no">Exhibit 3</div>
+  <h2>The cache trap that would have faked a null result</h2>
+  <p class="note">The cache path encodes backend and model, not the memory configuration. Without the <code>_noevo</code> suffix both arms share one directory, the ablation reloads the baseline's notes, and the experiment reports a difference of exactly zero.</p>
+  <div class="filepath">test_advanced_robust.py — lines 239-247 of 459</div>
+  <pre><div><span class="ln">239</span>    # MODIFICATION (ablation): the arm tag keeps cached memories of the two arms apart. Without it</div>
+<div><span class="ln">240</span>    # the ablation would silently load the baseline&#x27;s notes and the comparison would be meaningless.</div>
+<div class="hit"><span class="ln">241</span>    arm_tag = &quot;_noevo&quot; if no_evolution else &quot;&quot;</div>
+<div><span class="ln">242</span>    memories_dir = os.path.join(</div>
+<div><span class="ln">243</span>        os.path.dirname(__file__),</div>
+<div><span class="ln">244</span>        &quot;cached_memories_robust_{}_{}{}{}&quot;.format(backend, safe_model,</div>
+<div><span class="ln">245</span>                                                  &quot;_refresh&quot; if refresh_index else &quot;&quot;, arm_tag),</div>
+<div><span class="ln">246</span>    )</div>
+<div><span class="ln">247</span>    os.makedirs(memories_dir, exist_ok=True)</div></pre>
+</section>
+<section>
+  <div class="ex-no">Exhibit 4</div>
+  <h2>The swallowed exception: BLEU-1 was silently 0.0 for every question</h2>
+  <p class="note">nltk 3.8.1 calls <code>Fraction(_normalize=)</code>, removed in Python 3.12. The bare <code>except</code> turned the TypeError into 0.0, so a broken metric looked like a low score. Now the first failure is reported out loud.</p>
+  <div class="filepath">utils.py — lines 84-96 of 263</div>
+  <pre><div><span class="ln">84</span>        try:</div>
+<div><span class="ln">85</span>            score = sentence_bleu(ref_tokens, pred_tokens, weights=weights, smoothing_function=smooth)</div>
+<div class="hit"><span class="ln">86</span>        except Exception as exc:</div>
+<div><span class="ln">87</span>            # MODIFICATION (diagnostics): upstream swallows this and returns 0.0, so a broken BLEU</div>
+<div><span class="ln">88</span>            # backend produces a table of zeros that looks like a low score instead of an error.</div>
+<div><span class="ln">89</span>            # With nltk 3.8.1 on Python &gt;= 3.12 that is exactly what happened (Fraction() lost its</div>
+<div><span class="ln">90</span>            # _normalize argument). Report the first failure loudly, then stay quiet.</div>
+<div><span class="ln">91</span>            global _BLEU_ERROR_REPORTED</div>
+<div><span class="ln">92</span>            if not _BLEU_ERROR_REPORTED:</div>
+<div><span class="ln">93</span>                print(f&quot;Warning: BLEU could not be computed ({type(exc).__name__}: {exc}); &quot;</div>
+<div><span class="ln">94</span>                      f&quot;every question will report 0.0 for BLEU&quot;)</div>
+<div><span class="ln">95</span>                _BLEU_ERROR_REPORTED = True</div>
+<div><span class="ln">96</span>            score = 0.0</div></pre>
+</section>
+<section>
+  <div class="ex-no">Exhibit 5</div>
+  <h2>Retrieval depth: the driver defaults to k=10, paper Table 5 lists 40/50</h2>
+  <p class="note">The baseline uses the shipped default; one extra trial at k=40 on the identical cached memories measures the setting gap instead of assuming it.</p>
+  <div class="filepath">test_advanced_robust.py — lines 419-421 of 459</div>
+  <pre><div class="hit"><span class="ln">419</span>    parser.add_argument(&quot;--retrieve_k&quot;, type=int, default=10,</div>
+<div><span class="ln">420</span>                        help=&quot;Number of memories to retrieve&quot;)</div>
+<div><span class="ln">421</span>    parser.add_argument(&quot;--sglang_host&quot;, type=str, default=&quot;http://localhost&quot;,</div></pre>
+</section>
+</body>
+</html>
