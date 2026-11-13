@@ -170,7 +170,7 @@ def preflight_block():
         raw = fh.read().splitlines()
     kept = [ln for ln in raw if "Loading weights" not in ln and "Could not reach" not in ln][-22:]
     body = "\n".join(
-        f'<div class="{"hit" if ("calls=" in ln or "cat 5:" in ln) else ""}">'
+        f'<div class="{"hit" if ("build:" in ln or "cat 5:" in ln or "calls=" in ln) else ""}">'
         f"{html.escape(ln) or '&nbsp;'}</div>"
         for ln in kept
     )
