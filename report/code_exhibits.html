@@ -6,12 +6,17 @@
 <style>
 :root { --ink:#1a1a1a; --muted:#5f5f5f; --rule:#d8d8d8; --bg:#fdfdfc; --accent:#7a1f1f; }
 * { box-sizing: border-box; }
-body { margin:0; padding:56px 64px 96px; background:var(--bg); color:var(--ink);
+body { margin:0; padding:0 64px 96px; background:var(--bg); color:var(--ink);
   font-family:"Segoe UI",-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:17px; line-height:1.55; }
-header { max-width:980px; margin:0 auto 44px; border-bottom:2px solid var(--ink); padding-bottom:18px; }
+nav { position:sticky; top:0; z-index:5; background:rgba(253,253,252,.96);
+  border-bottom:1px solid var(--rule); padding:12px 0 11px; display:flex; gap:20px;
+  flex-wrap:wrap; font-size:14.5px; }
+nav a { color:var(--accent); text-decoration:none; letter-spacing:.01em; }
+nav a:hover { text-decoration:underline; }
+header { max-width:980px; margin:26px auto 40px; border-bottom:2px solid var(--ink); padding-bottom:18px; }
 h1 { font-size:29px; margin:0 0 8px; font-weight:650; letter-spacing:-.01em; }
 header p { margin:0; color:var(--muted); font-size:15px; }
-section { max-width:980px; margin:0 auto 60px; page-break-inside:avoid; }
+section { max-width:980px; margin:0 auto 60px; scroll-margin-top:64px; page-break-inside:avoid; }
 .ex-no { display:inline-block; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
   color:var(--accent); font-weight:700; margin-bottom:6px; }
 h2 { font-size:22px; margin:0 0 8px; font-weight:620; letter-spacing:-.01em; }
@@ -31,11 +36,12 @@ code { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.9
 </style>
 </head>
 <body>
+<nav><a href="#ex1">1 · category 5 scoring</a><a href="#ex2">2 · the one-line change</a><a href="#ex3">3 · the cache trap</a><a href="#ex4">4 · the swallowed exception</a><a href="#ex5">5 · retrieval depth</a></nav>
 <header>
   <h1>A-MEM reproduction — code exhibits</h1>
   <p>FTEC5660 reproducibility work · Zi Han QIU · 1155268166 · lines read from the repository at HEAD, not transcribed</p>
 </header>
-<section>
+<section id="ex1">
   <div class="ex-no">Exhibit 1</div>
   <h2>Category 5 is scored against the trap answer</h2>
   <p class="note">The paper's evaluation behind Table 1 scored adversarial questions against <code>adversarial_answer</code> — the wrong answer — so falling for the trap reads as a high score. 444 of the 446 have no gold answer at all.</p>
@@ -49,7 +55,7 @@ code { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.9
 <div class="hit"><span class="ln">33</span>            return self.adversarial_answer if legacy_c5 else NOT_MENTIONED</div>
 <div><span class="ln">34</span>        return self.answer</div></pre>
 </section>
-<section>
+<section id="ex2">
   <div class="ex-no">Exhibit 2</div>
   <h2>The whole modification is one line (417)</h2>
   <p class="note">With <code>--no-evolution</code>, a note keeps its LLM-extracted metadata but never gains links, never strengthens tags, never rewrites its neighbours. Retrieval, prompts, k, seeds and metrics are untouched.</p>
@@ -61,7 +67,7 @@ code { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.9
 <div><span class="ln">418</span>        self.memories[note.id] = note</div>
 <div><span class="ln">419</span>        self.retriever.add_documents([note_document(note)])</div></pre>
 </section>
-<section>
+<section id="ex3">
   <div class="ex-no">Exhibit 3</div>
   <h2>The cache trap that would have faked a null result</h2>
   <p class="note">The cache path encodes backend and model, not the memory configuration. Without the <code>_noevo</code> suffix both arms share one directory, the ablation reloads the baseline's notes, and the experiment reports a difference of exactly zero.</p>
@@ -76,7 +82,7 @@ code { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.9
 <div><span class="ln">246</span>    )</div>
 <div><span class="ln">247</span>    os.makedirs(memories_dir, exist_ok=True)</div></pre>
 </section>
-<section>
+<section id="ex4">
   <div class="ex-no">Exhibit 4</div>
   <h2>The swallowed exception: BLEU-1 was silently 0.0 for every question</h2>
   <p class="note">nltk 3.8.1 calls <code>Fraction(_normalize=)</code>, removed in Python 3.12. The bare <code>except</code> turned the TypeError into 0.0, so a broken metric looked like a low score. Now the first failure is reported out loud.</p>
@@ -95,7 +101,7 @@ code { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.9
 <div><span class="ln">95</span>                _BLEU_ERROR_REPORTED = True</div>
 <div><span class="ln">96</span>            score = 0.0</div></pre>
 </section>
-<section>
+<section id="ex5">
   <div class="ex-no">Exhibit 5</div>
   <h2>Retrieval depth: the driver defaults to k=10, paper Table 5 lists 40/50</h2>
   <p class="note">The baseline uses the shipped default; one extra trial at k=40 on the identical cached memories measures the setting gap instead of assuming it.</p>

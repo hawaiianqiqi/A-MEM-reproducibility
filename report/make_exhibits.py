@@ -38,12 +38,17 @@ EXHIBITS = [
 CSS = """
 :root { --ink:#1a1a1a; --muted:#5f5f5f; --rule:#d8d8d8; --bg:#fdfdfc; --accent:#7a1f1f; }
 * { box-sizing: border-box; }
-body { margin:0; padding:56px 64px 96px; background:var(--bg); color:var(--ink);
+body { margin:0; padding:0 64px 96px; background:var(--bg); color:var(--ink);
   font-family:"Segoe UI",-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:17px; line-height:1.55; }
-header { max-width:980px; margin:0 auto 44px; border-bottom:2px solid var(--ink); padding-bottom:18px; }
+nav { position:sticky; top:0; z-index:5; background:rgba(253,253,252,.96);
+  border-bottom:1px solid var(--rule); padding:12px 0 11px; display:flex; gap:20px;
+  flex-wrap:wrap; font-size:14.5px; }
+nav a { color:var(--accent); text-decoration:none; letter-spacing:.01em; }
+nav a:hover { text-decoration:underline; }
+header { max-width:980px; margin:26px auto 40px; border-bottom:2px solid var(--ink); padding-bottom:18px; }
 h1 { font-size:29px; margin:0 0 8px; font-weight:650; letter-spacing:-.01em; }
 header p { margin:0; color:var(--muted); font-size:15px; }
-section { max-width:980px; margin:0 auto 60px; page-break-inside:avoid; }
+section { max-width:980px; margin:0 auto 60px; scroll-margin-top:64px; page-break-inside:avoid; }
 .ex-no { display:inline-block; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
   color:var(--accent); font-weight:700; margin-bottom:6px; }
 h2 { font-size:22px; margin:0 0 8px; font-weight:620; letter-spacing:-.01em; }
@@ -82,7 +87,7 @@ def main():
         highlight = {1: 33, 2: 417, 3: 241, 4: 86, 5: 419}[no]
         body, total = render_snippet(path, start, end, highlight)
         parts.append(
-            f'<section>\n'
+            f'<section id="ex{no}">\n'
             f'  <div class="ex-no">Exhibit {no}</div>\n'
             f'  <h2>{html.escape(title)}</h2>\n'
             f'  <p class="note">{note}</p>\n'
@@ -95,6 +100,13 @@ def main():
         "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
         "<title>A-MEM reproduction — code exhibits</title>\n"
         f"<style>{CSS}</style>\n</head>\n<body>\n"
+        "<nav>"
+        '<a href="#ex1">1 · category 5 scoring</a>'
+        '<a href="#ex2">2 · the one-line change</a>'
+        '<a href="#ex3">3 · the cache trap</a>'
+        '<a href="#ex4">4 · the swallowed exception</a>'
+        '<a href="#ex5">5 · retrieval depth</a>'
+        "</nav>\n"
         "<header>\n"
         "  <h1>A-MEM reproduction — code exhibits</h1>\n"
         "  <p>FTEC5660 reproducibility work · Zi Han QIU · 1155268166 · "

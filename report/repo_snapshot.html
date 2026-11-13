@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>A-MEM reproduction — repository facts</title>
+<style>
+:root { --ink:#1a1a1a; --muted:#5f5f5f; --rule:#d8d8d8; --bg:#fdfdfc; --accent:#7a1f1f; }
+* { box-sizing: border-box; }
+body { margin:0; padding:0 64px 96px; background:var(--bg); color:var(--ink);
+  font-family:"Segoe UI",-apple-system,"Helvetica Neue",Arial,sans-serif; font-size:17px; line-height:1.55; }
+nav { position:sticky; top:0; z-index:5; background:rgba(253,253,252,.96);
+  border-bottom:1px solid var(--rule); padding:12px 0 11px; display:flex; gap:20px;
+  flex-wrap:wrap; font-size:14.5px; }
+nav a { color:var(--accent); text-decoration:none; letter-spacing:.01em; }
+nav a:hover { text-decoration:underline; }
+header { max-width:980px; margin:26px auto 40px; border-bottom:2px solid var(--ink); padding-bottom:18px; }
+h1 { font-size:29px; margin:0 0 8px; font-weight:650; letter-spacing:-.01em; }
+header p { margin:0; color:var(--muted); font-size:15px; }
+section { max-width:980px; margin:0 auto 58px; scroll-margin-top:64px; page-break-inside:avoid; }
+.ex-no { display:inline-block; font-size:12.5px; letter-spacing:.14em; text-transform:uppercase;
+  color:var(--accent); font-weight:700; margin-bottom:6px; }
+h2 { font-size:22px; margin:0 0 8px; font-weight:620; letter-spacing:-.01em; }
+.note { margin:0 0 14px; color:#333; font-size:15.5px; }
+.filepath { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:14px;
+  color:var(--muted); margin-bottom:10px; }
+pre { margin:0; background:#fff; border:1px solid var(--rule); border-left:3px solid var(--ink);
+  border-radius:3px; padding:18px 20px; overflow-x:auto;
+  font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:15px; line-height:1.62; }
+.ln { display:inline-block; width:3.1em; color:#9a9a9a; text-align:right; margin-right:1.4em;
+  user-select:none; font-variant-numeric:tabular-nums; }
+.hit { background:#fff4c2; }
+code { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; font-size:.94em;
+  background:#f0efec; padding:1px 5px; border-radius:3px; }
+table { border-collapse:collapse; width:100%; font-size:15.5px; }
+th, td { text-align:left; padding:7px 12px 7px 0; border-bottom:1px solid var(--rule);
+  vertical-align:top; }
+th { font-weight:620; color:#333; font-size:14px; letter-spacing:.02em; text-transform:uppercase; }
+td.num, th.num { text-align:right; font-variant-numeric:tabular-nums; }
+tr.pivot td { background:#fff9e3; }
+td.sha { font-family:ui-monospace,"Cascadia Mono",Consolas,monospace; color:var(--muted); }
+@page { margin:14mm; }
+@media print { nav{position:static} body{padding:0;font-size:12px} section{margin-bottom:26px} pre{font-size:10.5px} }
+</style>
+</head>
+<body>
+<nav><a href="#history">History</a><a href="#ablation">The ablation commit</a><a href="#release">What the release contains</a><a href="#paper">Paper targets</a><a href="#preflight">Saved preflight</a><a href="#evidence">Evidence files</a><a href="#hygiene">Hygiene</a></nav>
+<header>
+  <h1>A-MEM reproduction — repository facts</h1>
+  <p>FTEC5660 reproducibility work · Zi Han QIU · 1155268166 · HEAD 1bb6796 · 17 commits · last commit 2026-11-13</p>
+</header>
+<section id="history">
+  <div class="ex-no">1</div>
+  <h2>History: 17 steps, in the order they happened</h2>
+  <p class="note">Each commit is one decision. The highlighted rows are the ablation, the metric fix and the current HEAD.</p>
+  <table><tr><th>commit</th><th>date</th><th>what it establishes</th></tr><tr class="pivot"><td class="sha">1bb6796</td><td class="sha">2026-11-13</td><td>docs(recording): code exhibits as a scrollable page, no terminal needed</td></tr><tr><td class="sha">7e4c170</td><td class="sha">2026-11-13</td><td>docs: point the report at the published repository</td></tr><tr><td class="sha">bf3d76a</td><td class="sha">2026-11-13</td><td>docs(recording): code exhibits printable from the terminal</td></tr><tr><td class="sha">42254fc</td><td class="sha">2026-11-11</td><td>docs: shot-by-shot recording script with file and line cues</td></tr><tr><td class="sha">86929d2</td><td class="sha">2026-11-11</td><td>docs: fill in the student name and ID on the report</td></tr><tr><td class="sha">f53f388</td><td class="sha">2026-11-09</td><td>exp(k40): one-trial k=40 sensitivity pass; the report&#x27;s largest gap is now measured</td></tr><tr><td class="sha">7bc1510</td><td class="sha">2026-11-08</td><td>docs: verify the BERTScore path instead of leaving it untested</td></tr><tr><td class="sha">63a3880</td><td class="sha">2026-11-08</td><td>docs: add the formatted report (.docx) as submitted</td></tr><tr><td class="sha">368b4b8</td><td class="sha">2026-11-08</td><td>chore: drop the model-download scratch script</td></tr><tr><td class="sha">fafcc73</td><td class="sha">2026-11-08</td><td>docs: reproduction README, report, and the measured ablation</td></tr><tr class="pivot"><td class="sha">5ccd09b</td><td class="sha">2026-11-08</td><td>fix(eval): BLEU-1 was silently 0.0 for every question</td></tr><tr><td class="sha">15a7d5d</td><td class="sha">2026-11-08</td><td>fix(env): make the harness importable on a machine with no CDN access</td></tr><tr><td class="sha">bbf149f</td><td class="sha">2026-11-08</td><td>chore: drop local install helper from the repo</td></tr><tr class="pivot"><td class="sha">0334040</td><td class="sha">2026-11-08</td><td>exp(ablation): --no-evolution switch, isolated cache per arm</td></tr><tr><td class="sha">ea0e69d</td><td class="sha">2026-11-08</td><td>feat(eval): multi-trial runner, cost/latency accounting, env preflight</td></tr><tr><td class="sha">2993417</td><td class="sha">2026-11-08</td><td>feat(backend): DeepSeek-compatible controller for the controlled model swap</td></tr><tr><td class="sha">5dfe737</td><td class="sha">2026-11-08</td><td>chore: pristine snapshot of WujiangXu/AgenticMemory (A-MEM LoCoMo harness)</td></tr></table>
+</section>
+<section id="ablation">
+  <div class="ex-no">2</div>
+  <h2>The ablation commit, as recorded</h2>
+  <p class="note">One flag, one code path, one commit — plus the per-arm cache directory that keeps the two arms from reading each other's notes.</p>
+  <pre><div class="">commit 0334040</div>
+<div class="">exp(ablation): --no-evolution switch, isolated cache per arm</div>
+<div class="">&nbsp;</div>
+<div class="">&nbsp;</div>
+<div class=""> _deps.sh                | 16 ++++++++++++++++</div>
+<div class="hit"> memory_layer_robust.py  | 10 ++++++++--</div>
+<div class=""> repro_runner.py         |  7 +++++--</div>
+<div class=""> run_repro.sh            | 12 ++++++++++--</div>
+<div class="hit"> test_advanced_robust.py | 27 +++++++++++++++++++++------</div>
+<div class=""> 5 files changed, 60 insertions(+), 12 deletions(-)</div></pre>
+</section>
+<section id="release">
+  <div class="ex-no">3</div>
+  <h2>What the release actually contains</h2>
+  <p class="note">Counted from <code>data/locomo10.json</code> on this machine, not taken from the paper.</p>
+  <table><tr><th>quantity</th><th class="num">value</th><th>where it comes from</th></tr><tr><td>conversations in the released file</td><td class="num">10</td><td class="sha">computed here</td></tr><tr><td>QA pairs in the released file</td><td class="num">1,986</td><td class="sha">computed here</td></tr><tr><td>QA pairs the paper describes</td><td class="num">7,512</td><td class="sha">transcribed from the paper</td></tr><tr><td>questions in my scope (conversation 0)</td><td class="num">199</td><td class="sha">computed here</td></tr><tr><td>trials per arm</td><td class="num">3</td><td class="sha">my protocol</td></tr></table>
+</section>
+<section id="paper">
+  <div class="ex-no">4</div>
+  <h2>Paper targets, transcribed once</h2>
+  <p class="note">Table 1 (A-MEM column, gpt-4o-mini), Table 2 (multi-hop mechanism removal), and the retrieval depths the paper sweeps next to the depth the driver actually ships. Transcribed so the recording needs no network.</p>
+  <table><tr><th>Table 1, gpt-4o-mini row</th><th class="num">paper F1</th><th class="num">mine (k=10)</th><th class="num">gap</th></tr><tr><td>Single-hop</td><td class="num">27.02</td><td class="num">44.00</td><td class="num">+16.98</td></tr><tr><td>Multi-hop</td><td class="num">45.85</td><td class="num">27.39</td><td class="num">−18.46</td></tr><tr><td>Temporal</td><td class="num">12.14</td><td class="num">20.17</td><td class="num">+8.03</td></tr><tr><td>Open-domain</td><td class="num">44.65</td><td class="num">10.25</td><td class="num">−34.40</td></tr><tr><td>Adversarial</td><td class="num">50.03</td><td class="num">25.76</td><td class="num">−24.27</td></tr></table><div style="height:14px"></div><table><tr><th>Table 2, multi-hop only</th><th class="num">F1</th></tr><tr><td>full model</td><td class="num">45.85</td></tr><tr><td>w/o memory evolution</td><td class="num">31.24</td></tr><tr class="pivot"><td>w/o link generation &amp; memory evolution</td><td class="num">24.55</td></tr></table><div style="height:14px"></div><table><tr><th>Table 5, retrieval depth for this backbone</th><th class="num">k</th><th>where it comes from</th></tr><tr class="pivot"><td>what the shipped driver does</td><td class="num">10</td><td>transcribed from <code>test_advanced_robust.py</code></td></tr><tr><td>what the paper sweeps</td><td class="num">40, 50</td><td>transcribed from the paper</td></tr></table>
+</section>
+<section id="preflight">
+  <div class="ex-no">5</div>
+  <h2>The saved preflight</h2>
+  <p class="note">Eight turns of memory, one question per category, then the token and call totals. Twenty-two lines, minus the model-loading noise.</p>
+  <pre><div class="">--- building memory over 8 turns ---</div>
+<div class="">  turn  1:   1.7s  &#x27;Speaker Carolinesays : Hey Mel! Good to see you! How have you been?&#x27;</div>
+<div class="">  turn  2:   2.9s  &quot;Speaker Melaniesays : Hey Caroline! Good to see you! I&#x27;m swamped with &quot;</div>
+<div class="">  turn  3:   2.1s  &#x27;Speaker Carolinesays : I went to a LGBTQ support group yesterday and i&#x27;</div>
+<div class="">  turn  4:   3.0s  &quot;Speaker Melaniesays : Wow, that&#x27;s cool, Caroline! What happened that w&quot;</div>
+<div class="">  turn  5:   3.3s  &#x27;Speaker Carolinesays : [Image: a photo of a dog walking past a wall wi&#x27;</div>
+<div class="">  turn  6:   3.5s  &#x27;Speaker Melaniesays : Wow, love that painting! So cool you found such &#x27;</div>
+<div class="">  turn  7:   2.8s  &#x27;Speaker Carolinesays : The support group has made me feel accepted and&#x27;</div>
+<div class="">  turn  8:   3.6s  &quot;Speaker Melaniesays : That&#x27;s really cool. You&#x27;ve got guts. What now?&quot;</div>
+<div class="">build: 23s total, 2.9s/turn, 8 notes</div>
+<div class="">&nbsp;</div>
+<div class="">--- answering 5 questions (one per category) ---</div>
+<div class="">  cat 1:   1.5s | context 9626 chars | pred=&#x27;LGBTQ support group&#x27; | ref=&#x27;Adoption agencies&#x27; | F1=0.000</div>
+<div class="">  cat 2:   0.9s | context 9626 chars | pred=&#x27;Yesterday&#x27; | ref=&#x27;7 May 2023&#x27; | F1=0.000</div>
+<div class="">  cat 3:   1.9s | context 9626 chars | pred=&#x27;LGBTQ support group&#x27; | ref=&#x27;Psychology, counseling certification&#x27; | F1=0.000</div>
+<div class="">  cat 4:   2.1s | context 9626 chars | pred=&#x27;LGBTQ support group&#x27; | ref=&#x27;mental health&#x27; | F1=0.000</div>
+<div class="hit">  cat 5:   1.8s | context 9626 chars | pred=&#x27;Not mentioned in the conversation&#x27; | ref=&#x27;self-care is important&#x27; | F1=0.000</div>
+<div class="">&nbsp;</div>
+<div class="hit">calls=31 errors=0 in=22312 out=1096 cost=$0.0067</div>
+<div class="">mean latency 1.0s/call</div>
+<div class="">projected full-conversation wall clock: 0.4 h (2.9s/turn x 419 turns + 199 questions x 2 calls)</div>
+<div class="">EXIT=0</div></pre>
+</section>
+<section id="evidence">
+  <div class="ex-no">6</div>
+  <h2>Evidence files</h2>
+  <p class="note">Per-question scores for every trial. Each number in the report is recomputable from these files without paying for a run.</p>
+  <table><tr><th>results/</th><th class="num">bytes</th></tr><tr><td class="sha">baseline_k40_summary.json</td><td class="num">24,453</td></tr><tr><td class="sha">baseline_k40_summary.md</td><td class="num">484</td></tr><tr><td class="sha">baseline_k40_trial0.json</td><td class="num">175,518</td></tr><tr><td class="sha">baseline_summary.json</td><td class="num">64,807</td></tr><tr><td class="sha">baseline_summary.md</td><td class="num">487</td></tr><tr><td class="sha">baseline_trial0.json</td><td class="num">164,696</td></tr><tr><td class="sha">baseline_trial1.json</td><td class="num">165,276</td></tr><tr><td class="sha">baseline_trial2.json</td><td class="num">165,633</td></tr><tr><td class="sha">noevo_summary.json</td><td class="num">65,064</td></tr><tr><td class="sha">noevo_summary.md</td><td class="num">484</td></tr><tr><td class="sha">noevo_trial0.json</td><td class="num">165,657</td></tr><tr><td class="sha">noevo_trial1.json</td><td class="num">165,186</td></tr><tr><td class="sha">noevo_trial2.json</td><td class="num">165,255</td></tr><tr><td class="sha">report_tables.md</td><td class="num">899</td></tr></table>
+</section>
+<section id="hygiene">
+  <div class="ex-no">7</div>
+  <h2>No key anywhere in the history</h2>
+  <p class="note">The API key lives in <code>.env</code>, which is ignored and was never committed.</p>
+  <pre><div>.venv/</div>
+<div>__pycache__/</div>
+<div>*.pyc</div>
+<div>.env</div>
+<div>cached_memories*/</div>
+<div>logs/</div>
+<div>*.log</div>
+<div>&nbsp;</div>
+<div># trial outputs are kept: they are the evidence behind the report&#x27;s tables</div></pre><p class="note" style="margin-top:12px">git log --all -- .env &nbsp;→&nbsp; <code>0 commits touch .env</code></p>
+</section>
+</body>
+</html>
