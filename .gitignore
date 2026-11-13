@@ -9,3 +9,6 @@ logs/
 # trial outputs are kept: they are the evidence behind the report's tables
 # (only the embedding arrays are dropped, since the caches rebuild them)
 results/*.npy
+
+# slidep build state
+.slidep/
