@@ -3,7 +3,7 @@
 **Course:** FTEC5660 Agentic AI for Business and FinTech — Reproducibility Work
 **Name:** Zi Han QIU **Student ID:** 1155268166
 **Repository:** https://github.com/hawaiianqiqi/A-MEM-reproducibility
-**Demo recording:** [link]
+**Demo recording:** https://drive.google.com/file/d/1gQRp74yl6oZx7h6sAq0tHTcVZAK8Wac_/view?usp=sharing
 
 ---
 
