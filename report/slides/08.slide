@@ -1,0 +1,30 @@
+<Slide notes={`Second setting: retrieval depth. Table 5 of the paper lists k equals forty and fifty for this backbone. The driver that ships with the repository defaults to ten. I ran ten as the baseline and then added one trial at forty on the identical cached memories — so I could measure the gap instead of just declaring it.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>Retrieval depth k</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>08 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'column', paddingTop: 34, paddingBottom: 40 }}>
+    <Box style={{ flexDirection: 'row', gap: 40 }}>
+      <Box style={{ flex: 1, flexDirection: 'column' }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 14 }}>test_advanced_robust.py — line 419</Text>
+        <Box style={{ background: '#F7F9FC', paddingTop: 22, paddingBottom: 22, paddingLeft: 22, paddingRight: 22 }}>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>419  parser.add_argument("--retrieve_k",</Text>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>        type=int, default=10, …)</Text>
+        </Box>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.5, marginTop: 16 }}>The driver that ships with the repository defaults to <span style={{ fontWeight: 'bold', color: '#1A2230' }}>k = 10</span>.</Text>
+      </Box>
+      <Box style={{ flex: 0.9, flexDirection: 'column', justifyContent: 'center' }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 22, fontWeight: 'bold', marginBottom: 14 }}>Paper, Table 5 (this backbone)</Text>
+        <Text style={{ color: '#4A5568', fontSize: 20, lineHeight: 1.5, marginBottom: 10 }}>The paper sweeps <span style={{ fontWeight: 'bold', color: '#1A2230' }}>k = 40</span> (single-hop, multi-hop, adversarial) and <span style={{ fontWeight: 'bold', color: '#1A2230' }}>k = 50</span> (temporal, open-domain).</Text>
+        <Text style={{ color: '#4A5568', fontSize: 20, lineHeight: 1.5 }}>A single-k reproduction would blame the backbone for the whole gap.</Text>
+      </Box>
+    </Box>
+    <Box style={{ background: '#E8EFF8', paddingTop: 18, paddingBottom: 18, paddingLeft: 24, paddingRight: 24, marginTop: 32 }}>
+      <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.5 }}><span style={{ fontWeight: 'bold', color: '#1E4FA8' }}>Measured, not assumed:</span> baseline at k=10, plus one trial at k=40 on the identical cached memories.</Text>
+    </Box>
+  </Box>
+</Slide>

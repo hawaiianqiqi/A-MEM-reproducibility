@@ -1,0 +1,33 @@
+<Slide notes={`Four things I would tell whoever does this next. One: write the target claim down before the first paid call. Two: isolate the ablation cache before running anything — this is the failure that produces a clean, believable, completely fake null result. Three: print the metric edges next to the first result — a swallowed exception turned BLEU into a column of zeros that reads like a low score, not a bug. Four: report distributions, not points. And I close on the k=40 pass, because it is the single most instructive number here: nine points of overall gap were my setting; sixteen to thirty-four points on multi-hop and open-domain were not. A reproduction that measures only one setting cannot tell those two apart — and that distinction is the actual deliverable.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>Advice — and the number that matters</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>15 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'column', paddingTop: 34, paddingBottom: 40 }}>
+    <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 16 }}>ADVICE TO THE NEXT PERSON</Text>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 16, paddingBottom: 16, borderBottom: '1px solid #E5E7EB' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 20, fontWeight: 'bold', width: 60 }}>01</Text>
+      <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.4 }}>Write the target claim down before the first paid call.</Text>
+    </Box>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 16, paddingBottom: 16, borderBottom: '1px solid #E5E7EB' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 20, fontWeight: 'bold', width: 60 }}>02</Text>
+      <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.4 }}>Isolate the ablation cache before running anything — this is the failure that fakes a null result.</Text>
+    </Box>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 16, paddingBottom: 16, borderBottom: '1px solid #E5E7EB' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 20, fontWeight: 'bold', width: 60 }}>03</Text>
+      <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.4 }}>Print the metric edges next to the first result — a swallowed exception reads as a low score.</Text>
+    </Box>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 16, paddingBottom: 16, borderBottom: '1px solid #E5E7EB' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 20, fontWeight: 'bold', width: 60 }}>04</Text>
+      <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.4 }}>Report distributions, not points — the zero BLEU column was only visible across three trials.</Text>
+    </Box>
+    <Box style={{ background: '#1E4FA8', paddingTop: 22, paddingBottom: 22, paddingLeft: 26, paddingRight: 26, marginTop: 28, flexDirection: 'row', alignItems: 'center', gap: 28 }}>
+      <Text style={{ color: '#FFFFFF', fontSize: 44, fontWeight: 'bold', lineHeight: 1 }}>9 vs 16–34</Text>
+      <Text style={{ color: '#E8EFF8', fontSize: 20, lineHeight: 1.4 }}>points of the overall gap were my setting; the multi-hop and open-domain deficits were not. A reproduction that measures one setting cannot tell those apart.</Text>
+    </Box>
+  </Box>
+</Slide>

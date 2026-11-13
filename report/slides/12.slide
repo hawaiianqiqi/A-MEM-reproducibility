@@ -1,0 +1,38 @@
+<Slide notes={`One flag, one code path, one commit. With the flag on, a note keeps its LLM-extracted metadata — title, keywords, tags, summary — but it never gains links, never strengthens its tags, never rewrites its neighbours. Retrieval, prompts, k, seeds and metrics are untouched, so the two arms differ in one mechanism only. And the cache trap: the cache path encodes backend and model, not the memory configuration. Without an arm suffix, both arms share one directory, the ablation silently reloads the baseline's notes, and the experiment reports a difference of zero — a perfectly plausible null result produced by a directory name. I fixed it before the first run.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>The modification: one line, one flag</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>12 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'column', paddingTop: 34, paddingBottom: 40 }}>
+    <Box style={{ flexDirection: 'row', gap: 32 }}>
+      <Box style={{ flex: 1, flexDirection: 'column' }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 14 }}>memory_layer_robust.py — line 417</Text>
+        <Box style={{ background: '#F7F9FC', paddingTop: 22, paddingBottom: 22, paddingLeft: 22, paddingRight: 22, flexDirection: 'column' }}>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>416      )</Text>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>417  evo_label, note = (False, note)</Text>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>         if self.no_evolution</Text>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>         else self.process_memory(note)</Text>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>418      self.memories[note.id] = note</Text>
+        </Box>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.5, marginTop: 14 }}>With the flag on, a note never gains links, never strengthens tags, never rewrites its neighbours.</Text>
+      </Box>
+      <Box style={{ flex: 1, flexDirection: 'column' }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 14 }}>test_advanced_robust.py — line 241</Text>
+        <Box style={{ background: '#F7F9FC', paddingTop: 22, paddingBottom: 22, paddingLeft: 22, paddingRight: 22, flexDirection: 'column' }}>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>239  # keeps cached memories of the two arms apart</Text>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>241  arm_tag = "_noevo" if no_evolution else ""</Text>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>244  cached_memories_robust_{'{backend}'}_{'{model}'}</Text>
+          <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>245       … {'{arm_tag}'}</Text>
+        </Box>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.5, marginTop: 14 }}>The cache path must encode the memory configuration — or the ablation reads the baseline's notes.</Text>
+      </Box>
+    </Box>
+    <Box style={{ background: '#FFF8E1', paddingTop: 16, paddingBottom: 16, paddingLeft: 24, paddingRight: 24, marginTop: 28 }}>
+      <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.5 }}><span style={{ fontWeight: 'bold', color: '#D9534F' }}>The trap:</span> without the arm suffix, the ablation reports a difference of <span style={{ fontWeight: 'bold' }}>exactly zero</span> — clean, believable, completely fake.</Text>
+    </Box>
+  </Box>
+</Slide>

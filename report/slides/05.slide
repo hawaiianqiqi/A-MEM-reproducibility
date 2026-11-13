@@ -1,0 +1,40 @@
+<Slide notes={`The setup is the least interesting part of the report and the most expensive part of the work. Four failures never printed a traceback. Importing the metrics module killed the interpreter with no output, twice, for two unrelated reasons: it downloaded NLTK data at import time, and sentence-transformers resolved a model revision over the network. Every entry point died before printing the reason. The worst one is the cache trap — it is not an environment problem, it is an experimental-design problem: the memory cache path does not encode the memory configuration, so the ablation arm would have loaded the baseline's notes from disk and reported a difference of exactly zero — clean, believable, and completely fake.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>Four failures that never printed a traceback</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>05 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'column', paddingTop: 34, paddingBottom: 40 }}>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 20, paddingBottom: 20, borderBottom: '1px solid #E5E7EB' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 20, fontWeight: 'bold', width: 60 }}>01</Text>
+      <Box style={{ flex: 1 }}>
+        <Text style={{ color: '#1A2230', fontSize: 20, fontWeight: 'bold', marginBottom: 4 }}>import utils exited with SIGTERM, zero output</Text>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.4 }}>nltk.download at import time; the unreachable NLTK host took the interpreter down before anything could print.</Text>
+      </Box>
+    </Box>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 20, paddingBottom: 20, borderBottom: '1px solid #E5E7EB' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 20, fontWeight: 'bold', width: 60 }}>02</Text>
+      <Box style={{ flex: 1 }}>
+        <Text style={{ color: '#1A2230', fontSize: 20, fontWeight: 'bold', marginBottom: 4 }}>Next import died silently at a network resolve</Text>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.4 }}>sentence-transformers resolved a model revision over the network at import; the 502 killed the process.</Text>
+      </Box>
+    </Box>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 20, paddingBottom: 20, borderBottom: '1px solid #E5E7EB' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 20, fontWeight: 'bold', width: 60 }}>03</Text>
+      <Box style={{ flex: 1 }}>
+        <Text style={{ color: '#1A2230', fontSize: 20, fontWeight: 'bold', marginBottom: 4 }}>Every BLEU-1 cell was 0.00, with no error</Text>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.4 }}>nltk 3.8.1 calls a keyword removed in Python 3.12; the bare except swallowed the TypeError and returned 0.0.</Text>
+      </Box>
+    </Box>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', paddingTop: 20, paddingBottom: 20, background: '#FFF8E1' }}>
+      <Text style={{ color: '#D9534F', fontSize: 20, fontWeight: 'bold', width: 60 }}>04</Text>
+      <Box style={{ flex: 1 }}>
+        <Text style={{ color: '#1A2230', fontSize: 20, fontWeight: 'bold', marginBottom: 4 }}>The cache trap — an experimental-design problem, not an environment one</Text>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.4 }}>The cache path encodes backend and model, not the memory configuration. The ablation would load the baseline's notes and report a difference of <span style={{ fontWeight: 'bold', color: '#D9534F' }}>exactly zero</span>.</Text>
+      </Box>
+    </Box>
+  </Box>
+</Slide>

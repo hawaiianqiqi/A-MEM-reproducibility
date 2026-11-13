@@ -1,0 +1,13 @@
+<Slide notes={`Everything is in the repository: the pristine snapshot, the backend swap, the evaluation infrastructure, the ablation, each environment fix, and the docs — the preflight, the raw trial JSONs so every number can be recomputed without paying for a run, and no API key anywhere in the history. Thank you.`} style={{ padding: 0, background: '#1E4FA8', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 720, flexDirection: 'column', justifyContent: 'center', paddingLeft: 90, paddingRight: 90 }}>
+    <Box style={{ width: 120, height: 6, background: '#FFFFFF', marginBottom: 40 }} />
+    <Text style={{ color: '#FFFFFF', fontSize: 64, fontWeight: 'bold', lineHeight: 1.1 }}>Thank you.</Text>
+    <Text style={{ color: '#E8EFF8', fontSize: 24, marginTop: 22, lineHeight: 1.4 }}>Everything is in the repository — with no API key anywhere in the history.</Text>
+    <Text style={{ color: '#FFFFFF', fontSize: 22, fontWeight: 'bold', marginTop: 40 }}>https://github.com/hawaiianqiqi/A-MEM-reproducibility</Text>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 60 }}>
+      <Text style={{ color: '#B8C7E6', fontSize: 16 }}>Zi Han QIU</Text>
+      <Text style={{ color: '#B8C7E6', fontSize: 16 }}>·</Text>
+      <Text style={{ color: '#B8C7E6', fontSize: 16 }}>Student ID 1155268166</Text>
+    </Box>
+  </Box>
+</Slide>

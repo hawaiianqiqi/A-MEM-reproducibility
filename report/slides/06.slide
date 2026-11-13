@@ -1,0 +1,32 @@
+<Slide notes={`This is the preflight I wrote after those four failures. Eight turns of memory, then one question per category. It prints per-turn build latency, the retrieval context size, one answer per category, and the token and cost totals. Two and a half minutes, and it would have caught three of the four failures before any real money was spent. Keep your eye on the category-five line — prediction 'not mentioned', reference is the trap answer, F1 zero. That zero is the scam I will explain in ninety seconds.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>The preflight</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>06 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'row', gap: 40, paddingTop: 34, paddingBottom: 40 }}>
+    <Box style={{ flex: 1.15, flexDirection: 'column' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 14 }}>report/preflight_demo.log (tail)</Text>
+      <Box style={{ background: '#F7F9FC', paddingTop: 20, paddingBottom: 20, paddingLeft: 22, paddingRight: 22, flexDirection: 'column' }}>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>--- building memory over 8 turns ---</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>  turn 1:   1.7s  'Speaker Carolinesays : Hey Mel…'</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>  … 7 more turns …</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>build: 23s total, 2.9s/turn, 8 notes</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7, marginTop: 8 }}>--- answering 5 questions (one per category) ---</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>cat 5: … pred='Not mentioned in the conversation'</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2', marginBottom: 8 }}>      | ref='self-care is important' | F1=0.000</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1E4FA8', lineHeight: 1.7, fontWeight: 'bold' }}>calls=31 errors=0 in=22312 out=1096 cost=$0.0067</Text>
+      </Box>
+    </Box>
+    <Box style={{ flex: 0.85, flexDirection: 'column', justifyContent: 'center' }}>
+      <Text style={{ color: '#1A2230', fontSize: 22, fontWeight: 'bold', marginBottom: 18 }}>Eight turns, then one question per category.</Text>
+      <Text style={{ color: '#4A5568', fontSize: 20, lineHeight: 1.5, marginBottom: 14 }}>Prints per-turn latency, retrieval context size, one answer per category, and the token and cost totals.</Text>
+      <Box style={{ borderTop: '1px solid #D6DCE5', marginTop: 6, paddingTop: 18 }}>
+        <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.5 }}><span style={{ fontWeight: 'bold', color: '#1E4FA8' }}>2.5 minutes, zero spend.</span> Catches three of the four failures before any real money is spent.</Text>
+      </Box>
+    </Box>
+  </Box>
+</Slide>

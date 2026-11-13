@@ -1,0 +1,38 @@
+<Slide notes={`Category five asks about something never mentioned, and the correct answer is 'not mentioned'. But the evaluation behind the paper's numbers scored those questions against adversarial_answer — the trap itself — so falling for the trap reads as a high score. Four hundred and forty-four of the four hundred and forty-six have no gold answer at all. Same predictions, two labels: scored the paper's way, adversarial F1 is 25.76; scored the task's way, it is 74.86. Anyone putting adversarial F1 next to the other four is comparing similarity-to-a-wrong-answer with similarity-to-a-right-answer.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>Category 5 is scored against the trap</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>07 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'row', gap: 40, paddingTop: 34, paddingBottom: 40 }}>
+    <Box style={{ flex: 1, flexDirection: 'column' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 14 }}>load_dataset.py — line 33</Text>
+      <Box style={{ background: '#F7F9FC', paddingTop: 22, paddingBottom: 22, paddingLeft: 22, paddingRight: 22, flexDirection: 'column' }}>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>27  def reference(self, legacy_c5: bool = False):</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>28      """The gold answer to score against."""</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>32      if self.category == 5:</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>33          return self.adversarial_answer</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#1A2230', lineHeight: 1.7, background: '#FFF4C2' }}>             if legacy_c5 else NOT_MENTIONED</Text>
+        <Text style={{ fontFamily: 'Consolas, monospace', fontSize: 16, color: '#4A5568', lineHeight: 1.7 }}>34      return self.answer</Text>
+      </Box>
+      <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.4, marginTop: 16 }}>444 of the 446 category-5 questions have no gold answer at all.</Text>
+    </Box>
+    <Box style={{ flex: 0.95, flexDirection: 'column', justifyContent: 'center' }}>
+      <Text style={{ color: '#1A2230', fontSize: 22, fontWeight: 'bold', marginBottom: 16 }}>Same predictions, two labels.</Text>
+      <Box style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 28, marginBottom: 24 }}>
+        <Box style={{ flexDirection: 'column' }}>
+          <Text style={{ color: '#4A5568', fontSize: 16, marginBottom: 4 }}>scored the paper's way</Text>
+          <Text style={{ color: '#1A2230', fontSize: 52, fontWeight: 'bold', lineHeight: 1 }}>25.76</Text>
+        </Box>
+        <Box style={{ flexDirection: 'column' }}>
+          <Text style={{ color: '#4A5568', fontSize: 16, marginBottom: 4 }}>scored the task's way</Text>
+          <Text style={{ color: '#1E4FA8', fontSize: 52, fontWeight: 'bold', lineHeight: 1 }}>74.86</Text>
+        </Box>
+      </Box>
+      <Text style={{ color: '#4A5568', fontSize: 20, lineHeight: 1.5 }}>The correct reply to an adversarial question is "not mentioned" — so declining is a <span style={{ fontWeight: 'bold', color: '#1A2230' }}>correct</span> answer, and the paper's column is a measurement artefact.</Text>
+    </Box>
+  </Box>
+</Slide>

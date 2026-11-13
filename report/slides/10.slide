@@ -1,0 +1,41 @@
+<Slide notes={`Three trials, mean and standard deviation, the same 199 questions. Overall 30.39 plus or minus 1.25 against the paper's per-category numbers — the paper does not report an overall column, which is itself worth noticing, because the average hides the disagreement. Single-hop is 44.00 against 27.02, seventeen points stronger; temporal 20.17 against 12.14. DeepSeek is simply the better reader there. Open-domain collapses to 10.25 against 44.65 — DeepSeek answers 'not mentioned' and category three punishes exactly that. And multi-hop, the category the whole thesis rests on, is 27.39 against 45.85 — that number did not transfer. Note the standard deviation: 3.48, ten times the spread of single-hop.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>Results vs the paper (k = 10)</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>10 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'column', paddingTop: 30, paddingBottom: 40 }}>
+    <Table
+      style={{ width: '100%', height: 460 }}
+      defaultTextStyle={{ fontSize: 17, textAlign: 'left', color: '#1A2230' }}
+      defaultCellStyle={{ border: { bottom: { width: 1, color: '#E5E7EB' } } }}
+      cells={[
+        [
+          { text: 'Category', textStyle: { bold: true, color: '#1E4FA8' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          { text: 'F1 (ours)', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          { text: 'BLEU-1', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          { text: 'F1 (paper)', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          { text: 'Δ F1', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+        ],
+        ['Single-hop', { text: '44.00 ± 0.32', textStyle: { textAlign: 'right' } }, { text: '38.93', textStyle: { textAlign: 'right' } }, { text: '27.02', textStyle: { textAlign: 'right' } }, { text: '+16.98', textStyle: { textAlign: 'right', color: '#1E4FA8', bold: true } }],
+        ['Multi-hop', { text: '27.39 ± 3.48', textStyle: { textAlign: 'right' } }, { text: '18.52', textStyle: { textAlign: 'right' } }, { text: '45.85', textStyle: { textAlign: 'right' } }, { text: '-18.46', textStyle: { textAlign: 'right', color: '#D9534F', bold: true } }],
+        ['Temporal', { text: '20.17 ± 1.07', textStyle: { textAlign: 'right' } }, { text: '12.86', textStyle: { textAlign: 'right' } }, { text: '12.14', textStyle: { textAlign: 'right' } }, { text: '+8.03', textStyle: { textAlign: 'right', color: '#1E4FA8' } }],
+        ['Open-domain', { text: '10.25 ± 0.64', textStyle: { textAlign: 'right' } }, { text: '7.26', textStyle: { textAlign: 'right' } }, { text: '44.65', textStyle: { textAlign: 'right' } }, { text: '-34.40', textStyle: { textAlign: 'right', color: '#D9534F', bold: true } }],
+        ['Adversarial', { text: '25.76 ± 5.47', textStyle: { textAlign: 'right' } }, { text: '25.33', textStyle: { textAlign: 'right' } }, { text: '50.03', textStyle: { textAlign: 'right' } }, { text: '-24.27', textStyle: { textAlign: 'right' } }],
+        [
+          { text: 'Overall', textStyle: { bold: true, color: '#1A2230' }, cellStyle: { background: { color: '#F7F9FC' } } },
+          { text: '30.39 ± 1.25', textStyle: { bold: true, textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } },
+          { text: '—', textStyle: { textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } },
+          { text: '—', textStyle: { textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } },
+          { text: '—', textStyle: { textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } },
+        ],
+      ]}
+    />
+    <Box style={{ background: '#FFF8E1', paddingTop: 14, paddingBottom: 14, paddingLeft: 22, paddingRight: 22, marginTop: 20 }}>
+      <Text style={{ color: '#1A2230', fontSize: 19, lineHeight: 1.4 }}><span style={{ fontWeight: 'bold', color: '#D9534F' }}>Not uniformly worse — differently shaped.</span> Single-hop and temporal are stronger; multi-hop and open-domain are the misses.</Text>
+    </Box>
+  </Box>
+</Slide>

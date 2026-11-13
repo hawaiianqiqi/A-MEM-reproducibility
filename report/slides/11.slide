@@ -1,0 +1,53 @@
+<Slide notes={`This is the most instructive comparison in the whole study, and it cost nineteen yuan. Raising k from ten to forty moves overall F1 from 30.39 to 39.46, and adversarial from a twenty-four-point deficit to almost matching the paper. So most of the headline gap was my setting, not the model — a single-k reproduction would have blamed the backbone for all of it. But the two categories the thesis rests on barely move: multi-hop plus 2.5, open-domain plus 0.1. Retrieval depth explains the overall gap; it does not explain the mechanism-sensitive categories. That decomposition only exists because I ran the pass.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>k = 40: the gap was the setting</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>11 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'row', gap: 40, paddingTop: 34, paddingBottom: 40 }}>
+    <Box style={{ flex: 1.05, flexDirection: 'column' }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 14 }}>ONE TRIAL AT k=40, SAME CACHED MEMORIES</Text>
+      <Table
+        style={{ width: '100%', height: 430 }}
+        defaultTextStyle={{ fontSize: 17, textAlign: 'left', color: '#1A2230' }}
+        defaultCellStyle={{ border: { bottom: { width: 1, color: '#E5E7EB' } } }}
+        cells={[
+          [
+            { text: 'Category', textStyle: { bold: true, color: '#1E4FA8' }, cellStyle: { background: { color: '#E8EFF8' } } },
+            { text: 'k=10', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+            { text: 'k=40', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+            { text: 'Δ', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          ],
+          ['Single-hop', { text: '44.00', textStyle: { textAlign: 'right' } }, { text: '55.08', textStyle: { textAlign: 'right' } }, { text: '+11.1', textStyle: { textAlign: 'right', color: '#1E4FA8' } }],
+          ['Multi-hop', { text: '27.39', textStyle: { textAlign: 'right' } }, { text: '29.90', textStyle: { textAlign: 'right' } }, { text: '+2.5', textStyle: { textAlign: 'right', color: '#D9534F', bold: true } }],
+          ['Temporal', { text: '20.17', textStyle: { textAlign: 'right' } }, { text: '25.42', textStyle: { textAlign: 'right' } }, { text: '+5.3', textStyle: { textAlign: 'right', color: '#1E4FA8' } }],
+          ['Open-domain', { text: '10.25', textStyle: { textAlign: 'right' } }, { text: '10.32', textStyle: { textAlign: 'right' } }, { text: '+0.1', textStyle: { textAlign: 'right', color: '#D9534F', bold: true } }],
+          ['Adversarial', { text: '25.76', textStyle: { textAlign: 'right' } }, { text: '41.81', textStyle: { textAlign: 'right' } }, { text: '+16.1', textStyle: { textAlign: 'right', color: '#1E4FA8' } }],
+          [
+            { text: 'Overall', textStyle: { bold: true, color: '#1A2230' }, cellStyle: { background: { color: '#F7F9FC' } } },
+            { text: '30.39', textStyle: { bold: true, textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } },
+            { text: '39.46', textStyle: { bold: true, textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } },
+            { text: '+9.07', textStyle: { bold: true, textAlign: 'right', color: '#1E4FA8' }, cellStyle: { background: { color: '#F7F9FC' } } },
+          ],
+        ]}
+      />
+    </Box>
+    <Box style={{ flex: 0.95, flexDirection: 'column', justifyContent: 'center' }}>
+      <Box style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 20, marginBottom: 22 }}>
+        <Box style={{ flexDirection: 'column' }}>
+          <Text style={{ color: '#8B97A8', fontSize: 16, marginBottom: 4 }}>overall</Text>
+          <Text style={{ color: '#1E4FA8', fontSize: 56, fontWeight: 'bold', lineHeight: 1 }}>39.46</Text>
+        </Box>
+        <Text style={{ color: '#8B97A8', fontSize: 28 }}>from 30.39</Text>
+      </Box>
+      <Text style={{ color: '#1A2230', fontSize: 22, fontWeight: 'bold', marginBottom: 12 }}>Nine points were the setting.</Text>
+      <Text style={{ color: '#4A5568', fontSize: 20, lineHeight: 1.5 }}>Raising k closes most of the headline gap — including adversarial, from a 24-point deficit to near-parity with the paper.</Text>
+      <Box style={{ borderTop: '1px solid #D6DCE5', marginTop: 20, paddingTop: 18 }}>
+        <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.5 }}><span style={{ fontWeight: 'bold', color: '#D9534F' }}>But multi-hop (+2.5) and open-domain (+0.1) barely move.</span> Retrieval depth does not explain the mechanism-sensitive categories.</Text>
+      </Box>
+    </Box>
+  </Box>
+</Slide>

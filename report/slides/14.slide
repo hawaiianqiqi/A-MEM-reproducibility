@@ -1,0 +1,48 @@
+<Slide notes={`Every number here comes from intercepting each completion call, so it is measured, not projected. Building memory for one conversation takes 1,311 calls — 419 metadata extractions plus up to three evolution calls each, about 3.1 calls per turn — against 398 calls to answer all 199 questions. Remove the mechanism and the write path drops from 1,311 calls to 419, and from thirty-eight cents to three cents — eleven times cheaper, four times faster. And the cost is not confined to writing: with links in place, the ten retrieved notes drag their neighbours into the prompt, so one question consumes 11,910 input tokens against 1,508 without evolution — eight times. Total spend for the whole study, read from the provider's balance endpoint: fourteen point eight yuan, about two dollars, for roughly 6,300 calls.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>What the mechanism costs</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>14 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'column', paddingTop: 32, paddingBottom: 40 }}>
+    <Table
+      style={{ width: '100%', height: 330 }}
+      defaultTextStyle={{ fontSize: 16, textAlign: 'left', color: '#1A2230' }}
+      defaultCellStyle={{ border: { bottom: { width: 1, color: '#E5E7EB' } } }}
+      cells={[
+        [
+          { text: 'Phase', textStyle: { bold: true, color: '#1E4FA8' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          { text: 'Calls', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          { text: 'Input tokens', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          { text: 'Est. cost', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+          { text: 'Wall clock', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+        ],
+        ['Baseline: memory build', { text: '1,311', textStyle: { textAlign: 'right' } }, { text: '2.0 M', textStyle: { textAlign: 'right' } }, { text: '$0.375', textStyle: { textAlign: 'right' } }, { text: '28 min', textStyle: { textAlign: 'right' } }],
+        ['Baseline: answering', { text: '398 / trial', textStyle: { textAlign: 'right' } }, { text: '2.37 M', textStyle: { textAlign: 'right' } }, { text: '$0.67', textStyle: { textAlign: 'right' } }, { text: '6.6 min', textStyle: { textAlign: 'right' } }],
+        [{ text: 'No-evolution: memory build', cellStyle: { background: { color: '#F7F9FC' } } }, { text: '419', textStyle: { textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } }, { text: '0.34 M', textStyle: { textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } }, { text: '$0.033', textStyle: { textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } }, { text: '7 min', textStyle: { textAlign: 'right' }, cellStyle: { background: { color: '#F7F9FC' } } }],
+        ['Baseline at k=40: answering', { text: '398 / trial', textStyle: { textAlign: 'right' } }, { text: '9.60 M', textStyle: { textAlign: 'right' } }, { text: '$2.69', textStyle: { textAlign: 'right' } }, { text: '11.5 min', textStyle: { textAlign: 'right' } }],
+      ]}
+    />
+    <Box style={{ flexDirection: 'row', gap: 32, marginTop: 30 }}>
+      <Box style={{ flex: 1, flexDirection: 'column' }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 10 }}>THE READ PATH IS INFLATED TOO</Text>
+        <Box style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 16 }}>
+          <Text style={{ color: '#1A2230', fontSize: 40, fontWeight: 'bold', lineHeight: 1 }}>11,910</Text>
+          <Text style={{ color: '#8B97A8', fontSize: 22 }}>vs 1,508 tokens / question</Text>
+        </Box>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.5, marginTop: 6 }}>7.9× — the ten retrieved notes drag their neighbours into the prompt.</Text>
+      </Box>
+      <Box style={{ flex: 1, flexDirection: 'column' }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 10 }}>TOTAL SPEND</Text>
+        <Box style={{ flexDirection: 'row', alignItems: 'flex-end', gap: 16 }}>
+          <Text style={{ color: '#1A2230', fontSize: 40, fontWeight: 'bold', lineHeight: 1 }}>CNY 14.8</Text>
+          <Text style={{ color: '#8B97A8', fontSize: 22 }}>≈ $2.1</Text>
+        </Box>
+        <Text style={{ color: '#4A5568', fontSize: 18, lineHeight: 1.5, marginTop: 6 }}>≈ 6,300 calls, including one discarded build.</Text>
+      </Box>
+    </Box>
+  </Box>
+</Slide>

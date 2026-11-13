@@ -1,0 +1,42 @@
+<Slide notes={`My target was fixed before the first paid call: the A-MEM column of Table 1 — the per-category F1 and BLEU-1 on LoCoMo, for the GPT-4o-mini backbone. One table row, not the whole paper.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>The target: one table row</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>02 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'column', paddingTop: 34, paddingBottom: 40 }}>
+    <Box style={{ background: '#E8EFF8', paddingTop: 16, paddingBottom: 16, paddingLeft: 24, paddingRight: 24, marginBottom: 28 }}>
+      <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 6 }}>TARGET CLAIM — FIXED BEFORE THE FIRST PAID CALL</Text>
+      <Text style={{ color: '#1A2230', fontSize: 21, lineHeight: 1.4 }}>Reproduce the A-MEM column of Table 1, GPT-4o-mini backbone — per-category F1 and BLEU-1 on LoCoMo.</Text>
+    </Box>
+    <Box style={{ flexDirection: 'row', gap: 40 }}>
+      <Box style={{ flex: 1, flexDirection: 'column' }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 22, fontWeight: 'bold', marginBottom: 14 }}>Why this row</Text>
+        <Text style={{ color: '#4A5568', fontSize: 20, lineHeight: 1.5 }}>It is the paper's headline quantitative claim, and every ingredient needed to check it ships with the code: the LoCoMo file, the evaluation script, the memory implementation, the prompts.</Text>
+        <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.5, marginTop: 20 }}>I deliberately did <span style={{ fontWeight: 'bold' }}>not</span> use the library the paper advertises — its README says the numbers live elsewhere, and it has no evaluation script.</Text>
+      </Box>
+      <Box style={{ width: 520 }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 22, fontWeight: 'bold', marginBottom: 14 }}>Paper, Table 1 (gpt-4o-mini)</Text>
+        <Table
+          style={{ width: '100%', height: 300 }}
+          defaultTextStyle={{ fontSize: 16, textAlign: 'left', color: '#1A2230' }}
+          defaultCellStyle={{ border: { bottom: { width: 1, color: '#E5E7EB' } } }}
+          cells={[
+            [
+              { text: 'Category', textStyle: { bold: true, color: '#1E4FA8' }, cellStyle: { background: { color: '#E8EFF8' } } },
+              { text: 'F1', textStyle: { bold: true, color: '#1E4FA8', textAlign: 'right' }, cellStyle: { background: { color: '#E8EFF8' } } },
+            ],
+            ['Single-hop', { text: '27.02', textStyle: { textAlign: 'right' } }],
+            ['Multi-hop', { text: '45.85', textStyle: { textAlign: 'right' } }],
+            ['Temporal', { text: '12.14', textStyle: { textAlign: 'right' } }],
+            ['Open-domain', { text: '44.65', textStyle: { textAlign: 'right' } }],
+            ['Adversarial', { text: '50.03', textStyle: { textAlign: 'right' } }],
+          ]}
+        />
+      </Box>
+    </Box>
+  </Box>
+</Slide>

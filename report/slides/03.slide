@@ -1,0 +1,27 @@
+<Slide notes={`Two repositories share almost the same name, and choosing wrong would have cost me two days. The library the paper advertises has no evaluation script — nothing in it can be checked against a reported number. The numbers live in the experiment repository, which ships the dataset, the harness and the prompts. That is the one I reproduce.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 64, background: '#1E4FA8', flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={{ color: '#FFFFFF', fontSize: 32, fontWeight: 'bold', marginLeft: 60 }}>Which repository</Text>
+    <Text style={{ color: '#B8C7E6', fontSize: 16, marginLeft: 'auto', marginRight: 60 }}>FTEC5660 · Reproducibility</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 676, left: 60, width: 1160, height: 20, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#8B97A8', fontSize: 14 }}>03 / 16</Text>
+  </Box>
+  <Box style={{ position: 'absolute', top: 64, left: 60, width: 1160, height: 606, flexDirection: 'column', paddingTop: 34, paddingBottom: 40 }}>
+    <Box style={{ flexDirection: 'row', gap: 32 }}>
+      <Box style={{ flex: 0.9, border: '1px solid #D6DCE5', paddingTop: 26, paddingBottom: 26, paddingLeft: 28, paddingRight: 28, flexDirection: 'column' }}>
+        <Text style={{ color: '#8B97A8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 8 }}>THE LIBRARY</Text>
+        <Text style={{ color: '#1A2230', fontSize: 22, fontWeight: 'bold', marginBottom: 14 }}>agiresearch/A-mem</Text>
+        <Text style={{ color: '#4A5568', fontSize: 20, lineHeight: 1.5 }}>README states the paper's results live in the other repository. No evaluation script — nothing in it can be checked against a reported number.</Text>
+      </Box>
+      <Box style={{ flex: 1.1, border: '1px solid #1E4FA8', borderTopWidth: 4, borderTopColor: '#1E4FA8', paddingTop: 26, paddingBottom: 26, paddingLeft: 28, paddingRight: 28, flexDirection: 'column' }}>
+        <Text style={{ color: '#1E4FA8', fontSize: 15, fontWeight: 'bold', letterSpacing: 1, marginBottom: 8 }}>THE EXPERIMENT REPO — THE ONE I REPRODUCE</Text>
+        <Text style={{ color: '#1A2230', fontSize: 22, fontWeight: 'bold', marginBottom: 14 }}>WujiangXu/AgenticMemory</Text>
+        <Text style={{ color: '#4A5568', fontSize: 20, lineHeight: 1.5 }}>Ships the dataset (<span style={{ fontWeight: 'bold' }}>data/locomo10.json</span>), the evaluation harness, the memory implementation and the prompt templates — everything needed to check Table 1.</Text>
+      </Box>
+    </Box>
+    <Box style={{ background: '#F7F9FC', paddingTop: 18, paddingBottom: 18, paddingLeft: 24, paddingRight: 24, marginTop: 32 }}>
+      <Text style={{ color: '#1A2230', fontSize: 20, lineHeight: 1.4 }}><span style={{ fontWeight: 'bold', color: '#1E4FA8' }}>Choosing wrong would have cost two days.</span> The library overwrote the experiment repo file by file before I compared the two and kept only the experiment repository.</Text>
+    </Box>
+  </Box>
+</Slide>

@@ -1,0 +1,15 @@
+<Slide notes={`I set the target before I spent a single yuan: reproduce the A-MEM column of Table 1 in the paper, on LoCoMo, for the GPT-4o-mini backbone — the per-category F1 and BLEU-1. I reproduce one table row, not the whole paper, on one conversation, three trials per arm. The backbone is swapped to DeepSeek under the assignment's edge case A, with prompts, temperatures and max tokens held byte-identical.`} style={{ padding: 0, background: '#FFFFFF', fontFamily: 'Arial' }}>
+  <Box style={{ position: 'absolute', top: 0, left: 0, width: 1280, height: 720, flexDirection: 'column', justifyContent: 'center', paddingLeft: 90, paddingRight: 90 }}>
+    <Box style={{ width: 120, height: 6, background: '#1E4FA8', marginBottom: 36 }} />
+    <Text style={{ color: '#1E4FA8', fontSize: 20, fontWeight: '600', letterSpacing: 2, marginBottom: 22 }}>FTEC5660 · AGENTIC AI FOR BUSINESS AND FINTECH</Text>
+    <Text style={{ color: '#1A2230', fontSize: 58, fontWeight: 'bold', lineHeight: 1.12 }}>Reproducing A-MEM on LoCoMo</Text>
+    <Text style={{ color: '#4A5568', fontSize: 32, marginTop: 18 }}>What transfers, what does not</Text>
+    <Box style={{ flexDirection: 'row', alignItems: 'center', gap: 14, marginTop: 60 }}>
+      <Text style={{ color: '#4A5568', fontSize: 16 }}>Zi Han QIU</Text>
+      <Text style={{ color: '#8B97A8', fontSize: 16 }}>·</Text>
+      <Text style={{ color: '#4A5568', fontSize: 16 }}>Student ID 1155268166</Text>
+      <Text style={{ color: '#8B97A8', fontSize: 16 }}>·</Text>
+      <Text style={{ color: '#4A5568', fontSize: 16 }}>Reproducibility Work</Text>
+    </Box>
+  </Box>
+</Slide>
