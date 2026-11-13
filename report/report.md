@@ -242,7 +242,7 @@ a note's retrievability depends on what arrived after it — a nondeterministic 
 deterministic metric. That is a cost the paper's single-run reporting cannot show.
 
 **What the mechanism costs.** Removing it cuts the write path from 1,311 LLM calls to 419 for the
-same 419 turns — 4.1 calls per turn down to 1.0 — and the build from $0.375 to $0.033, an **11×
+same 419 turns — 3.1 calls per turn down to 1.0 — and the build from $0.375 to $0.033, an **11×
 reduction**: the evolution prompts carry five neighbour notes each, so they are both more numerous and
 longer. Read against the ablation table, the trade is roughly 11× the cost of the entire write path
 for ~4 F1 points on one of five categories. A practitioner deciding whether to enable evolution should

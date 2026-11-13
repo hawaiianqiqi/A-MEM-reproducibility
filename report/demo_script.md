@@ -1,5 +1,8 @@
 # 15-minute demo recording — script
 
+> ⚠️ Superseded by `demo_shotlist_browser.md` (a no-terminal, no-network version). Numbers below are
+> the early terminal-era script; the authoritative figures live in `report/report.md`.
+
 Recording tool: Zoom → *Share Screen* → local recording. Target 14–15 minutes. Numbers below are
 the ones to say out loud; the tables live in `report/report.md` and `results/report_tables.md`.
 
@@ -108,11 +111,11 @@ property of linked notes. DeepSeek reaches 27.39 without the scaffolding.
 
 Show `results/report_tables.md` cost table.
 
-Say: one conversation is **1,709 LLM calls to build memory** — 419 turns × (1 metadata call + up to
-3 evolution calls), i.e. ~4.1 calls per conversational turn — and only 398 calls to answer all 199
+Say: one conversation is **1,311 LLM calls to build memory** — 419 turns × (1 metadata call + up to
+3 evolution calls), i.e. ~3.1 calls per conversational turn — and only 398 calls to answer all 199
 questions. The paper reports inference tokens (2,520 per question) but never the construction cost.
-Wall clock: 28 minutes to build, 6.6 minutes per answering trial. About CNY 5 to build and CNY 4.7
-per trial on DeepSeek.
+Wall clock: 28 minutes to build, 6.6 minutes per answering trial. About $0.375 to build and $0.67
+per answering trial on DeepSeek.
 
 Say what this means for a practitioner: A-MEM's selling point is small *inference* prompts, but the
 write path is where the money goes, and it is the part that scales with conversation length rather

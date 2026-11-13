@@ -272,7 +272,7 @@ cache per arm`；接着点导航 `The ablation commit`，让 diffstat 整块入�
 
 > "Every number here comes from intercepting each completion call, so it is measured, not projected.
 > Building memory for one conversation takes 1,311 calls: 419 turns times one metadata call plus up
-> to three evolution calls — about four calls per conversational turn, and 2 million input tokens.
+> to three evolution calls — about three calls per conversational turn, and 2 million input tokens.
 > Answering all 199 questions takes 398 calls."
 
 **【画面 5-B】（12:05）**

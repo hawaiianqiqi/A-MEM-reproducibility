@@ -1,5 +1,8 @@
 # 录屏拍摄脚本（逐句 + 逐画面）
 
+> ⚠️ 本文件是**终端路线**的旧版脚本，已被 `demo_shotlist_browser.md`（无终端、无网络版）取代，
+> 请优先使用后者。数字口径以 `report/report.md` 为准。
+
 目标片长 14–15 分钟。每条 **【画面】** 给出窗口、文件、具体位置；紧随其后的「」里是**逐字念白**。
 念白的语言按课程要求用英文；若你想用中文讲，同一批画面和数字照用，只要把句子翻过去。
 
@@ -300,7 +303,7 @@ Word → 报告 **§4 成本表**（`Phase | Calls | Input tokens | Est. cost | 
 念：
 > "Every number here comes from intercepting each completion call, so it is measured, not projected.
 > Building memory for one conversation takes 1,311 calls: 419 turns times one metadata call plus up
-> to three evolution calls — about four calls per conversational turn, and 2 million input tokens.
+> to three evolution calls — about three calls per conversational turn, and 2 million input tokens.
 > Answering all 199 questions takes 398 calls."
 
 **【画面 5-B】（12:05）**
@@ -362,7 +365,7 @@ Word → 报告 **§7 Conclusion**，先停在 "Advice to the next person" 的�
 浏览器标签 B：你的 GitHub 仓库首页，鼠标划过 commit 列表。
 
 念：
-> "Everything is in the repository: thirteen commits — pristine snapshot, backend swap, evaluation
+> "Everything is in the repository: eighteen commits — pristine snapshot, backend swap, evaluation
 > infrastructure, the ablation, each environment fix, and the docs — the preflight, the raw trial
 > JSONs so every number can be recomputed without paying for a run, and no API key anywhere in the
 > history. Thank you."

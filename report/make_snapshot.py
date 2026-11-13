@@ -200,7 +200,6 @@ def hygiene_block():
 
 def main():
     head = git("rev-parse", "--short", "HEAD").strip()
-    count = git("rev-list", "--count", "HEAD").strip()
     date = git("log", "-1", "--date=short", "--pretty=format:%ad").strip()
 
     nav = (
@@ -216,7 +215,7 @@ def main():
     )
 
     parts = [
-        section("history", "1", f"History: {count} steps, in the order they happened",
+        section("history", "1", "History, in the order they happened",
                 "Each commit is one decision. The highlighted rows are the ablation, the metric fix "
                 "and the current HEAD.", history_block()),
         section("ablation", "2", "The ablation commit, as recorded",
@@ -247,8 +246,8 @@ def main():
         + nav
         + "\n<header>\n"
         "  <h1>A-MEM reproduction — repository facts</h1>\n"
-        f"  <p>FTEC5660 reproducibility work · Zi Han QIU · 1155268166 · HEAD {head} · "
-        f"{count} commits · last commit {date}</p>\n"
+        f"  <p>FTEC5660 reproducibility work · Zi Han QIU · 1155268166 · "
+        f"snapshot generated {date} from commit {head}</p>\n"
         "</header>\n"
         + "\n".join(parts)
         + "\n</body>\n</html>\n"
